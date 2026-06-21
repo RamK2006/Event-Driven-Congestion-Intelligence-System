@@ -4,7 +4,7 @@
  * 
  * Handles: tab navigation, map rendering (Leaflet + MarkerCluster),
  * prediction form submission, workload charts, historical trends,
- * methodology metrics display. All data fetched from Flask API.
+ * operational analytics. All data is fetched from the Flask API.
  */
 
 // ============================================================================
@@ -98,8 +98,6 @@ function switchTab(btn) {
         if (!filtersLoaded) loadFilters();
         loadTrends();
         loadCauseBreakdown();
-    } else if (panelId === 'methodology-panel') {
-        loadMethodologyMetrics();
     } else if (panelId === 'map-panel') {
         // Invalidate map size after tab switch
         setTimeout(() => { if (map) map.invalidateSize(); }, 100);
@@ -745,7 +743,7 @@ async function loadCauseBreakdown() {
 
 
 // ============================================================================
-// METHODOLOGY METRICS
+/* Removed from the product UI: legacy methodology metrics
 // ============================================================================
 async function loadMethodologyMetrics() {
     try {
@@ -867,21 +865,4 @@ function renderClassReport(report) {
 
     return html;
 }
-
-function renderErrorByCause(errorData) {
-    let html = '<div style="margin-top: 8px; border-top: 1px solid var(--border-subtle); padding-top: 8px;">';
-    html += '<div style="font-size: 0.7rem; color: var(--text-tertiary); margin-bottom: 4px; font-weight: 600;">Error by Event Cause:</div>';
-
-    const sorted = Object.entries(errorData).sort((a, b) => b[1].count - a[1].count);
-    sorted.forEach(([cause, metrics]) => {
-        html += `
-            <div class="metric-row">
-                <span class="metric-label">${cause} (n=${metrics.count})</span>
-                <span class="metric-value">MAE: ${metrics.mae} min</span>
-            </div>
-        `;
-    });
-
-    html += '</div>';
-    return html;
-}
+*/

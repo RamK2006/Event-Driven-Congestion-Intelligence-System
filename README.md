@@ -51,11 +51,6 @@ Interactive bar chart + ranked table of event load per station, filterable by ti
 ### 📊 Historical Trends
 Event counts over time with monthly, hourly, and day-of-week views. Filterable by cause, corridor, and zone.
 
-### 📋 Methodology & Limitations
-Permanently visible panel with honest reframing, model metrics, known limitations, and architecture description.
-
----
-
 ## Architecture
 
 ```
@@ -98,7 +93,7 @@ Permanently visible panel with honest reframing, model metrics, known limitation
 - **Tuning**: RandomizedSearchCV, max 20 parameter combinations per model
 - **Split**: 80/20, stratified for classifiers
 - **Class weighting**: `is_unbalance=True` (no SMOTE)
-- **Full metrics**: See `outputs/model_evaluation_report.json` or the Methodology tab in the dashboard
+- **Full metrics**: See `outputs/model_evaluation_report.json` and `outputs/model_diagnostics/`
 
 ---
 
@@ -171,17 +166,20 @@ git clone https://github.com/<your-username>/<repo-name>.git
 cd <repo-name>
 
 # 2. Create and activate virtual environment
-python -m venv venv
+python -m venv .venv
 # Windows:
-.\venv\Scripts\activate
+.\.venv\Scripts\activate
 # Linux/Mac:
-source venv/bin/activate
+source .venv/bin/activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run the full pipeline (data → models → clustering → diversion)
+# 4. Run the full pipeline (100 Optuna trials per model by default)
 python run.py
+
+# Or retrain only the models with an explicit tuning budget
+python src/train_models.py --trials 100
 
 # 5. Start the server (serves both API + dashboard)
 python src/server.py

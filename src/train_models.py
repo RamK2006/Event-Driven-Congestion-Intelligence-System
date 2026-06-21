@@ -1,400 +1,298 @@
-"""
-Model Training — Event Impact & Response Intelligence Platform
-===============================================================
-Trains three LightGBM models per spec Section 6:
-  Model A: priority_target (binary classification — High/Low)
-  Model B: closure_target (binary classification)
-  Model C: clearance_time_minutes (regression)
+"""Leakage-safe Bayesian tuning and training for all production models."""
 
-Uses RandomizedSearchCV (max 20 combos per model) for hyperparameter tuning.
-Reports: precision, recall, F1 per class, ROC-AUC for classifiers; MAE, RMSE
-and error breakdown by event_cause for regressor. Feature importance exported.
-"""
-
-import os
-import sys
+import argparse
 import json
+import os
 import warnings
-import numpy as np
-import pandas as pd
-import joblib
 
-from sklearn.model_selection import train_test_split, RandomizedSearchCV
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import (
-    classification_report, roc_auc_score, precision_recall_fscore_support,
-    mean_absolute_error, mean_squared_error
+os.environ.setdefault(
+    "MPLCONFIGDIR",
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "outputs", ".matplotlib"),
 )
 
+import joblib
 import lightgbm as lgb
+import matplotlib
+import numpy as np
+import optuna
+import pandas as pd
+from category_encoders import TargetEncoder
+from sklearn.metrics import (
+    ConfusionMatrixDisplay,
+    classification_report,
+    mean_absolute_error,
+    mean_squared_error,
+    roc_auc_score,
+)
+from sklearn.model_selection import KFold, StratifiedKFold, train_test_split
+from sklearn.preprocessing import LabelEncoder
+
+from model_bundle import ModelBundle
+
+if os.name == "nt":
+    import sys
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore", category=UserWarning)
+optuna.logging.set_verbosity(optuna.logging.WARNING)
 
-# ============================================================================
-# CONFIGURATION
-# ============================================================================
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 OUTPUTS_DIR = os.path.join(BASE_DIR, "outputs")
-
+DIAGNOSTICS_DIR = os.path.join(OUTPUTS_DIR, "model_diagnostics")
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
-MAX_TUNING_ITER = 20  # Max 20 parameter combinations per model per spec
-
-# Hyperparameter search space (bounded per spec Section 6)
-PARAM_SPACE = {
-    "n_estimators": [100, 200, 300, 500, 800],
-    "max_depth": [3, 5, 7, 10, 15, -1],
-    "learning_rate": [0.01, 0.05, 0.1, 0.2],
-    "num_leaves": [31, 50, 80, 127],
-    "min_child_samples": [5, 10, 20, 50],
-    "subsample": [0.7, 0.8, 0.9, 1.0],
-    "colsample_bytree": [0.7, 0.8, 0.9, 1.0],
-}
 
 
-# ============================================================================
-# DATA PREPARATION
-# ============================================================================
 def load_data():
-    """Load the feature-engineered datasets."""
-    full_path = os.path.join(DATA_DIR, "features_full.csv")
-    config_path = os.path.join(DATA_DIR, "feature_config.json")
-
-    if not os.path.exists(full_path):
-        print(f"❌ ERROR: {full_path} not found. Run data_pipeline.py first.")
-        sys.exit(1)
-
-    df = pd.read_csv(full_path, low_memory=False)
-    with open(config_path, "r") as f:
-        feature_config = json.load(f)
-
-    print(f"Loaded {len(df)} rows from features_full.csv")
-    return df, feature_config
+    df = pd.read_csv(os.path.join(DATA_DIR, "features_full.csv"), low_memory=False)
+    with open(os.path.join(DATA_DIR, "feature_config.json"), encoding="utf-8") as handle:
+        config = json.load(handle)
+    return df, config
 
 
 def prepare_features(df, feature_cols, target_col, is_regression=False):
-    """
-    Prepare feature matrix X and target vector y.
-    Encodes categoricals with LabelEncoder for LightGBM.
-    Returns X, y, label_encoders, feature_names.
-    """
-    # Filter to rows where target is not null
-    if is_regression:
-        mask = df[target_col].notna()
-        # VERIFY: no active rows
-        if "status" in df.columns:
-            active_in_subset = (df.loc[mask, "status"] == "active").sum()
-            assert active_in_subset == 0, \
-                f"CRITICAL: {active_in_subset} active rows in clearance-time subset!"
-            print(f"  ✅ Verified: 0 active-status rows in regression subset")
-    else:
-        mask = df[target_col].notna()
-
-    df_subset = df.loc[mask].copy()
-    print(f"  Subset for {target_col}: {len(df_subset)} rows")
-
-    # Only use feature columns that exist
-    available_features = [f for f in feature_cols if f in df_subset.columns]
-
-    X = df_subset[available_features].copy()
-    y = df_subset[target_col].copy()
-
-    # Encode categorical features
-    label_encoders = {}
-    categorical_cols = X.select_dtypes(include=["object", "bool"]).columns.tolist()
-
-    for col in categorical_cols:
-        le = LabelEncoder()
-        X[col] = X[col].astype(str).fillna("__MISSING__")
-        X[col] = le.fit_transform(X[col])
-        label_encoders[col] = le
-
-    # Encode binary target for classifiers
-    target_le = None
+    mask = df[target_col].notna()
+    if is_regression and "status" in df:
+        assert not (df.loc[mask, "status"] == "active").any(), "Active rows leaked into clearance target"
+    subset = df.loc[mask].copy()
+    features = [name for name in feature_cols if name in subset and name != "status"]
+    X = subset[features].copy()
+    categorical = X.select_dtypes(include=["object", "str", "category", "bool"]).columns.tolist()
+    for column in categorical:
+        X[column] = X[column].fillna("__MISSING__").astype(str)
+    numeric = [column for column in features if column not in categorical]
+    X[numeric] = X[numeric].apply(pd.to_numeric, errors="coerce").fillna(0.0)
+    y = subset[target_col].copy()
+    target_encoder = None
     if not is_regression:
-        target_le = LabelEncoder()
-        y = pd.Series(target_le.fit_transform(y.astype(str)), index=y.index)
-        label_encoders["__target__"] = target_le
-        print(f"  Target classes: {list(target_le.classes_)}")
-
-    # Handle remaining NaN in numeric features
-    X = X.fillna(0)
-
-    # Convert boolean columns to int
-    for col in X.select_dtypes(include=["bool"]).columns:
-        X[col] = X[col].astype(int)
-
-    return X, y, label_encoders, available_features
+        target_encoder = LabelEncoder()
+        y = pd.Series(target_encoder.fit_transform(y.astype(str)), index=y.index)
+    return X, y.astype(float if is_regression else int), categorical, features, target_encoder
 
 
-# ============================================================================
-# MODEL TRAINING
-# ============================================================================
-def train_classifier(X, y, model_name, label_encoders):
-    """
-    Train a LightGBM classifier with RandomizedSearchCV.
-    Uses class weighting (is_unbalance=True) per spec — no SMOTE.
-    """
-    print(f"\n{'='*60}")
-    print(f"Training {model_name}")
-    print(f"{'='*60}")
-
-    # Stratified 80/20 split
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
-    )
-    print(f"  Train: {len(X_train)} rows, Test: {len(X_test)} rows")
-    print(f"  Train class distribution: {pd.Series(y_train).value_counts().to_dict()}")
-    print(f"  Test class distribution: {pd.Series(y_test).value_counts().to_dict()}")
-
-    # LightGBM with class weighting
-    base_model = lgb.LGBMClassifier(
-        random_state=RANDOM_STATE,
-        is_unbalance=True,  # Per spec: class weighting, no SMOTE
-        verbose=-1,
-        n_jobs=-1,
-    )
-
-    # RandomizedSearchCV with max 20 iterations
-    search = RandomizedSearchCV(
-        base_model,
-        PARAM_SPACE,
-        n_iter=MAX_TUNING_ITER,
-        cv=5,
-        scoring="roc_auc",
-        random_state=RANDOM_STATE,
-        n_jobs=-1,
-        verbose=0,
-    )
-
-    print("  Running RandomizedSearchCV (20 combos, 5-fold CV)...")
-    search.fit(X_train, y_train)
-
-    best_model = search.best_estimator_
-    best_params = search.best_params_
-    print(f"  Best params: {best_params}")
-    print(f"  Best CV ROC-AUC: {search.best_score_:.4f}")
-
-    # Evaluate on test set
-    y_pred = best_model.predict(X_test)
-    y_pred_proba = best_model.predict_proba(X_test)[:, 1]
-
-    target_le = label_encoders.get("__target__")
-    target_names = list(target_le.classes_) if target_le else None
-
-    report = classification_report(y_test, y_pred, target_names=target_names, output_dict=True)
-    roc_auc = roc_auc_score(y_test, y_pred_proba)
-
-    print(f"\n  Classification Report:")
-    print(classification_report(y_test, y_pred, target_names=target_names))
-    print(f"  ROC-AUC: {roc_auc:.4f}")
-
-    # Feature importance
-    importance = dict(zip(X.columns, best_model.feature_importances_))
-    importance_sorted = dict(sorted(importance.items(), key=lambda x: x[1], reverse=True))
-
-    print(f"\n  Top 10 Feature Importances:")
-    for i, (feat, imp) in enumerate(list(importance_sorted.items())[:10]):
-        print(f"    {i+1}. {feat}: {imp}")
-
-    # Build results dict
-    results = {
-        "model_name": model_name,
-        "algorithm": "LightGBM Classifier",
-        "best_params": best_params,
-        "search_space": {k: [str(v) for v in vals] for k, vals in PARAM_SPACE.items()},
-        "tuning_iterations": MAX_TUNING_ITER,
-        "best_cv_roc_auc": round(search.best_score_, 4),
-        "train_size": len(X_train),
-        "test_size": len(X_test),
-        "classification_report": report,
-        "roc_auc": round(roc_auc, 4),
-        "feature_importance": {k: int(v) for k, v in importance_sorted.items()},
+def suggest_params(trial):
+    return {
+        "n_estimators": trial.suggest_int("n_estimators", 150, 1600, log=True),
+        "learning_rate": trial.suggest_float("learning_rate", 0.005, 0.2, log=True),
+        "num_leaves": trial.suggest_int("num_leaves", 15, 255),
+        "max_depth": trial.suggest_categorical("max_depth", [-1, 3, 5, 7, 10, 15]),
+        "min_child_samples": trial.suggest_int("min_child_samples", 5, 100),
+        "subsample": trial.suggest_float("subsample", 0.55, 1.0),
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.55, 1.0),
+        "reg_alpha": trial.suggest_float("reg_alpha", 1e-8, 10.0, log=True),
+        "reg_lambda": trial.suggest_float("reg_lambda", 1e-8, 10.0, log=True),
+        "min_split_gain": trial.suggest_float("min_split_gain", 0.0, 1.0),
+        "max_bin": trial.suggest_int("max_bin", 63, 255),
     }
 
-    return best_model, results, {"X_test": X_test, "y_test": y_test}
+
+def make_encoder(categorical):
+    return TargetEncoder(
+        cols=categorical, smoothing=12, min_samples_leaf=20,
+        handle_missing="value", handle_unknown="value", return_df=True,
+    )
 
 
-def train_regressor(X, y, df_full, feature_cols):
-    """
-    Train a LightGBM regressor for clearance_time_minutes.
-    Uses RandomizedSearchCV (max 20 combos).
-    Reports MAE, RMSE, and error breakdown by event_cause.
-    """
-    print(f"\n{'='*60}")
-    print(f"Training Model C: Clearance Time Regressor")
-    print(f"{'='*60}")
+def make_estimator(params, is_regression, scale_pos_weight=1.0):
+    common = dict(params, random_state=RANDOM_STATE, n_jobs=-1, verbosity=-1)
+    if is_regression:
+        return lgb.LGBMRegressor(objective="regression_l1", **common)
+    return lgb.LGBMClassifier(
+        objective="binary", scale_pos_weight=scale_pos_weight, **common
+    )
 
-    # 80/20 random split (no stratification for regression)
+
+def tune_model(X, y, categorical, is_regression, trials, model_key):
+    splitter = (
+        KFold(5, shuffle=True, random_state=RANDOM_STATE)
+        if is_regression else
+        StratifiedKFold(5, shuffle=True, random_state=RANDOM_STATE)
+    )
+
+    def objective(trial):
+        params = suggest_params(trial)
+        scores = []
+        for train_idx, valid_idx in splitter.split(X, y):
+            X_train, X_valid = X.iloc[train_idx], X.iloc[valid_idx]
+            y_train, y_valid = y.iloc[train_idx], y.iloc[valid_idx]
+            fit_target = np.log1p(y_train) if is_regression else y_train
+            encoder = make_encoder(categorical)
+            encoded_train = encoder.fit_transform(X_train, fit_target)
+            encoded_valid = encoder.transform(X_valid)
+            ratio = 1.0
+            if not is_regression:
+                counts = y_train.value_counts()
+                ratio = float(counts.get(0, 1) / max(counts.get(1, 1), 1))
+            estimator = make_estimator(params, is_regression, ratio)
+            estimator.fit(
+                encoded_train,
+                fit_target,
+                eval_set=[(encoded_valid, np.log1p(y_valid) if is_regression else y_valid)],
+                callbacks=[lgb.early_stopping(50, verbose=False)],
+            )
+            prediction = estimator.predict(encoded_valid)
+            if is_regression:
+                scores.append(mean_absolute_error(y_valid, np.expm1(prediction).clip(min=0)))
+            else:
+                scores.append(roc_auc_score(y_valid, estimator.predict_proba(encoded_valid)[:, 1]))
+        trial.set_user_attr("fold_scores", [float(score) for score in scores])
+        return float(np.mean(scores))
+
+    study = optuna.create_study(
+        direction="minimize" if is_regression else "maximize",
+        sampler=optuna.samplers.TPESampler(seed=RANDOM_STATE, multivariate=True),
+        pruner=optuna.pruners.MedianPruner(n_startup_trials=15),
+        study_name=model_key,
+    )
+    study.optimize(objective, n_trials=trials, show_progress_bar=False, gc_after_trial=True)
+    return study
+
+
+def save_optimization_plot(study, model_key):
+    completed = [trial for trial in study.trials if trial.value is not None]
+    values = [trial.value for trial in completed]
+    best = np.minimum.accumulate(values) if study.direction.name == "MINIMIZE" else np.maximum.accumulate(values)
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.scatter(range(1, len(values) + 1), values, s=14, alpha=.45, label="CV score")
+    ax.plot(range(1, len(best) + 1), best, color="#00a8cc", linewidth=2, label="Best so far")
+    ax.set(xlabel="Optuna trial", ylabel="CV MAE (minutes)" if study.direction.name == "MINIMIZE" else "CV ROC-AUC")
+    ax.grid(alpha=.2); ax.legend(); fig.tight_layout()
+    fig.savefig(os.path.join(DIAGNOSTICS_DIR, f"{model_key}_optimization.png"), dpi=160)
+    plt.close(fig)
+
+
+def save_learning_curve(evals_result, model_key, metric):
+    if not evals_result:
+        return
+    validation = next(iter(evals_result.values()))
+    values = next(iter(validation.values()))
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.plot(values, color="#00a8cc", linewidth=2)
+    ax.set(xlabel="Boosting iteration", ylabel=metric, title=f"{model_key.upper()} validation learning curve")
+    ax.grid(alpha=.2); fig.tight_layout()
+    fig.savefig(os.path.join(DIAGNOSTICS_DIR, f"{model_key}_learning_curve.png"), dpi=160)
+    plt.close(fig)
+
+
+def save_shap_plot(bundle, X, model_key):
+    try:
+        import shap
+        sample = X.sample(min(500, len(X)), random_state=RANDOM_STATE)
+        encoded = bundle._transform(sample)
+        explainer = shap.TreeExplainer(bundle.estimator)
+        values = explainer.shap_values(encoded)
+        if isinstance(values, list):
+            values = values[-1]
+        shap.summary_plot(values, encoded, feature_names=bundle.feature_names, show=False, max_display=18)
+        plt.tight_layout()
+        plt.savefig(os.path.join(DIAGNOSTICS_DIR, f"{model_key}_shap.png"), dpi=160, bbox_inches="tight")
+        plt.close()
+    except Exception as exc:
+        print(f"  SHAP diagnostic skipped for {model_key}: {exc}")
+
+
+def train_final(X, y, categorical, study, is_regression, model_key, target_encoder=None):
+    stratify = None if is_regression else y
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=stratify
     )
-    print(f"  Train: {len(X_train)} rows, Test: {len(X_test)} rows")
-    print(f"  Target stats (train): mean={y_train.mean():.1f}, median={y_train.median():.1f}, "
-          f"std={y_train.std():.1f} minutes")
-
-    # LightGBM regressor
-    base_model = lgb.LGBMRegressor(
-        random_state=RANDOM_STATE,
-        verbose=-1,
-        n_jobs=-1,
+    inner_stratify = None if is_regression else y_train
+    X_fit, X_valid, y_fit, y_valid = train_test_split(
+        X_train, y_train, test_size=.15, random_state=RANDOM_STATE, stratify=inner_stratify
     )
-
-    # RandomizedSearchCV
-    search = RandomizedSearchCV(
-        base_model,
-        PARAM_SPACE,
-        n_iter=MAX_TUNING_ITER,
-        cv=5,
-        scoring="neg_mean_absolute_error",
-        random_state=RANDOM_STATE,
-        n_jobs=-1,
-        verbose=0,
+    fit_target = np.log1p(y_fit) if is_regression else y_fit
+    valid_target = np.log1p(y_valid) if is_regression else y_valid
+    probe_encoder = make_encoder(categorical)
+    fit_encoded = probe_encoder.fit_transform(X_fit, fit_target)
+    valid_encoded = probe_encoder.transform(X_valid)
+    counts = y_fit.value_counts() if not is_regression else None
+    ratio = 1.0 if is_regression else float(counts.get(0, 1) / max(counts.get(1, 1), 1))
+    probe = make_estimator(study.best_params, is_regression, ratio)
+    probe.fit(
+        fit_encoded, fit_target, eval_set=[(valid_encoded, valid_target)],
+        callbacks=[lgb.early_stopping(60, verbose=False), lgb.record_evaluation({})],
     )
+    best_iteration = max(int(probe.best_iteration_ or study.best_params["n_estimators"]), 20)
+    evals_result = probe.evals_result_
 
-    print("  Running RandomizedSearchCV (20 combos, 5-fold CV)...")
-    search.fit(X_train, y_train)
-
-    best_model = search.best_estimator_
-    best_params = search.best_params_
-    print(f"  Best params: {best_params}")
-    print(f"  Best CV MAE: {-search.best_score_:.2f} minutes")
-
-    # Evaluate on test set
-    y_pred = best_model.predict(X_test)
-
-    mae = mean_absolute_error(y_test, y_pred)
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-    print(f"\n  Test MAE: {mae:.2f} minutes")
-    print(f"  Test RMSE: {rmse:.2f} minutes")
-
-    # Error breakdown by event_cause
-    # Get event_cause for test set rows
-    clearance_mask = df_full["clearance_time_minutes"].notna()
-    df_eligible = df_full.loc[clearance_mask].copy()
-    test_indices = X_test.index
-    event_causes_test = df_eligible.loc[test_indices, "event_cause"] if "event_cause" in df_eligible.columns else None
-
-    error_by_cause = {}
-    if event_causes_test is not None:
-        residuals = np.abs(y_test.values - y_pred)
-        cause_error_df = pd.DataFrame({
-            "event_cause": event_causes_test.values,
-            "abs_error": residuals,
-            "actual": y_test.values,
-            "predicted": y_pred
-        })
-        for cause, group in cause_error_df.groupby("event_cause"):
-            error_by_cause[cause] = {
-                "count": int(len(group)),
-                "mae": round(float(group["abs_error"].mean()), 2),
-                "mean_actual": round(float(group["actual"].mean()), 2),
-                "mean_predicted": round(float(group["predicted"].mean()), 2),
-            }
-        print(f"\n  Error breakdown by event_cause:")
-        for cause, metrics in sorted(error_by_cause.items(), key=lambda x: x[1]["count"], reverse=True):
-            print(f"    {cause}: MAE={metrics['mae']:.1f} min (n={metrics['count']})")
-
-    # Feature importance
-    importance = dict(zip(X.columns, best_model.feature_importances_))
-    importance_sorted = dict(sorted(importance.items(), key=lambda x: x[1], reverse=True))
-
-    print(f"\n  Top 10 Feature Importances:")
-    for i, (feat, imp) in enumerate(list(importance_sorted.items())[:10]):
-        print(f"    {i+1}. {feat}: {imp}")
-
-    results = {
-        "model_name": "Model C: Clearance Time Regressor",
-        "algorithm": "LightGBM Regressor",
-        "best_params": best_params,
-        "search_space": {k: [str(v) for v in vals] for k, vals in PARAM_SPACE.items()},
-        "tuning_iterations": MAX_TUNING_ITER,
-        "best_cv_mae": round(-search.best_score_, 4),
-        "train_size": len(X_train),
-        "test_size": len(X_test),
-        "test_mae_minutes": round(mae, 2),
-        "test_rmse_minutes": round(rmse, 2),
-        "error_by_event_cause": error_by_cause,
-        "feature_importance": {k: int(v) for k, v in importance_sorted.items()},
+    full_encoder = make_encoder(categorical)
+    full_target = np.log1p(y_train) if is_regression else y_train
+    train_encoded = full_encoder.fit_transform(X_train, full_target)
+    final_params = dict(study.best_params, n_estimators=best_iteration)
+    full_counts = y_train.value_counts() if not is_regression else None
+    full_ratio = 1.0 if is_regression else float(full_counts.get(0, 1) / max(full_counts.get(1, 1), 1))
+    estimator = make_estimator(final_params, is_regression, full_ratio)
+    estimator.fit(train_encoded, full_target)
+    bundle = ModelBundle(full_encoder, estimator, list(X.columns), categorical, log_target=is_regression)
+    prediction = bundle.predict(X_test)
+    importance = dict(sorted(zip(X.columns, estimator.feature_importances_), key=lambda pair: pair[1], reverse=True))
+    common = {
+        "algorithm": "LightGBM + leakage-safe target encoding",
+        "best_params": final_params,
+        "tuning_trials": len(study.trials),
+        "train_size": len(X_train), "test_size": len(X_test),
+        "feature_importance": {name: int(value) for name, value in importance.items()},
+        "target_encoding": "Fold-fitted regularized target encoding",
+        "early_stopping_best_iteration": best_iteration,
     }
+    if is_regression:
+        mae = mean_absolute_error(y_test, prediction)
+        rmse = float(np.sqrt(mean_squared_error(y_test, prediction)))
+        results = dict(common, model_name="Model C: Clearance Time Regressor", target_transform="log1p/expm1",
+                       best_cv_mae_minutes=round(float(study.best_value), 2), test_mae_minutes=round(float(mae), 2),
+                       test_rmse_minutes=round(rmse, 2), median_absolute_error_minutes=round(float(np.median(np.abs(y_test - prediction))), 2))
+    else:
+        probability = bundle.predict_proba(X_test)[:, 1]
+        auc = roc_auc_score(y_test, probability)
+        report = classification_report(y_test, prediction, target_names=list(target_encoder.classes_), output_dict=True, zero_division=0)
+        results = dict(common, model_name="Model A: Priority Classifier" if model_key == "model_a" else "Model B: Closure Classifier",
+                       best_cv_roc_auc=round(float(study.best_value), 4), roc_auc=round(float(auc), 4), classification_report=report)
+        ConfusionMatrixDisplay.from_predictions(y_test, prediction, display_labels=list(target_encoder.classes_), cmap="Blues", colorbar=False)
+        plt.tight_layout(); plt.savefig(os.path.join(DIAGNOSTICS_DIR, f"{model_key}_confusion_matrix.png"), dpi=160); plt.close()
+    save_learning_curve(evals_result, model_key, "L1" if is_regression else "binary logloss")
+    save_optimization_plot(study, model_key)
+    save_shap_plot(bundle, X_test, model_key)
+    return bundle, results, target_encoder
 
-    return best_model, results, {"X_test": X_test, "y_test": y_test}
 
-
-# ============================================================================
-# MAIN
-# ============================================================================
-def run_training():
-    """Execute the full model training pipeline."""
+def run_training(trials=100):
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs(OUTPUTS_DIR, exist_ok=True)
-
-    df, feature_config = load_data()
-    clf_features = feature_config["classification_features"]
-    reg_features = feature_config["regression_features"]
-
+    os.makedirs(DIAGNOSTICS_DIR, exist_ok=True)
+    df, config = load_data()
+    specifications = [
+        ("model_a", "priority_target", config["classification_features"], False, "model_a_priority.pkl"),
+        ("model_b", "closure_target", config["classification_features"], False, "model_b_closure.pkl"),
+        ("model_c", "clearance_time_minutes", config["regression_features"], True, "model_c_clearance.pkl"),
+    ]
     all_results = {}
-
-    # ---- MODEL A: Priority Classification ----
-    X_a, y_a, le_a, feats_a = prepare_features(
-        df, clf_features, "priority_target", is_regression=False
-    )
-    model_a, results_a, test_data_a = train_classifier(X_a, y_a, "Model A: Priority Classifier", le_a)
-    all_results["model_a"] = results_a
-
-    # Save model A
-    joblib.dump(model_a, os.path.join(MODELS_DIR, "model_a_priority.pkl"))
-    joblib.dump(le_a, os.path.join(MODELS_DIR, "model_a_encoders.pkl"))
-    joblib.dump(feats_a, os.path.join(MODELS_DIR, "model_a_features.pkl"))
-
-    # ---- MODEL B: Closure Classification ----
-    X_b, y_b, le_b, feats_b = prepare_features(
-        df, clf_features, "closure_target", is_regression=False
-    )
-    model_b, results_b, test_data_b = train_classifier(X_b, y_b, "Model B: Closure Classifier", le_b)
-    all_results["model_b"] = results_b
-
-    # Save model B
-    joblib.dump(model_b, os.path.join(MODELS_DIR, "model_b_closure.pkl"))
-    joblib.dump(le_b, os.path.join(MODELS_DIR, "model_b_encoders.pkl"))
-    joblib.dump(feats_b, os.path.join(MODELS_DIR, "model_b_features.pkl"))
-
-    # ---- MODEL C: Clearance Time Regression ----
-    X_c, y_c, le_c, feats_c = prepare_features(
-        df, reg_features, "clearance_time_minutes", is_regression=True
-    )
-    model_c, results_c, test_data_c = train_regressor(X_c, y_c, df, reg_features)
-    all_results["model_c"] = results_c
-
-    # Save model C
-    joblib.dump(model_c, os.path.join(MODELS_DIR, "model_c_clearance.pkl"))
-    joblib.dump(le_c, os.path.join(MODELS_DIR, "model_c_encoders.pkl"))
-    joblib.dump(feats_c, os.path.join(MODELS_DIR, "model_c_features.pkl"))
-
-    # Save all results
-    results_path = os.path.join(OUTPUTS_DIR, "model_evaluation_report.json")
-    with open(results_path, "w") as f:
-        json.dump(all_results, f, indent=2, default=str)
-    print(f"\n✅ All evaluation results saved to: {results_path}")
-
-    # Save split sizes summary
-    split_summary = {
-        "model_a": {"train": results_a["train_size"], "test": results_a["test_size"]},
-        "model_b": {"train": results_b["train_size"], "test": results_b["test_size"]},
-        "model_c": {"train": results_c["train_size"], "test": results_c["test_size"]},
-    }
-    split_path = os.path.join(OUTPUTS_DIR, "split_sizes.json")
-    with open(split_path, "w") as f:
-        json.dump(split_summary, f, indent=2)
-
-    print(f"\n{'='*60}")
-    print("✅ MODEL TRAINING COMPLETE")
-    print(f"{'='*60}")
-
+    for model_key, target, features, is_regression, filename in specifications:
+        print(f"\n{'=' * 68}\nTraining {model_key} with {trials} Optuna trials\n{'=' * 68}")
+        X, y, categorical, feature_names, target_encoder = prepare_features(df, features, target, is_regression)
+        study = tune_model(X, y, categorical, is_regression, trials, model_key)
+        bundle, results, target_encoder = train_final(X, y, categorical, study, is_regression, model_key, target_encoder)
+        all_results[model_key] = results
+        joblib.dump(bundle, os.path.join(MODELS_DIR, filename))
+        prefix = model_key.replace("model_", "model_")
+        joblib.dump({"__target__": target_encoder, "__bundle__": True}, os.path.join(MODELS_DIR, f"{prefix}_encoders.pkl"))
+        joblib.dump(feature_names, os.path.join(MODELS_DIR, f"{prefix}_features.pkl"))
+        print(f"  Best CV score: {study.best_value:.4f}")
+    with open(os.path.join(OUTPUTS_DIR, "model_evaluation_report.json"), "w", encoding="utf-8") as handle:
+        json.dump(all_results, handle, indent=2, default=str)
+    with open(os.path.join(OUTPUTS_DIR, "split_sizes.json"), "w", encoding="utf-8") as handle:
+        json.dump({key: {"train": value["train_size"], "test": value["test_size"]} for key, value in all_results.items()}, handle, indent=2)
+    print("\nModel training complete.")
     return all_results
 
 
 if __name__ == "__main__":
-    run_training()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--trials", type=int, default=int(os.environ.get("OPTUNA_TRIALS", "100")))
+    args = parser.parse_args()
+    run_training(max(args.trials, 1))

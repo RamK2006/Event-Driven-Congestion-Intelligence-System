@@ -18,6 +18,10 @@ from datetime import datetime
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
+try:
+    from .data_pipeline import INDIAN_HOLIDAYS_REFERENCE
+except ImportError:  # Direct execution: python src/server.py
+    from data_pipeline import INDIAN_HOLIDAYS_REFERENCE
 
 warnings.filterwarnings("ignore")
 
@@ -320,13 +324,16 @@ def predict():
 
         lat = float(data.get("latitude", 0))
         lon = float(data.get("longitude", 0))
+        if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+            return jsonify({"error": "Latitude or longitude is outside the valid range"}), 400
         event_cause = data.get("event_cause", "vehicle_breakdown")
         veh_type = data.get("veh_type", "Unknown_VehType")
         datetime_str = data.get("datetime_str", datetime.utcnow().isoformat())
         event_type = data.get("event_type", "unplanned")
 
         # Parse datetime
-        dt = pd.Timestamp(datetime_str, tz="UTC")
+        dt = pd.Timestamp(datetime_str)
+        dt = dt.tz_localize("UTC") if dt.tzinfo is None else dt.tz_convert("UTC")
 
         # Find nearest corridor, zone, police_station from historical data
         df = ASSETS.get("df")
@@ -345,12 +352,38 @@ def predict():
             zone = "Zone_Unknown"
             junction = "Junction_Unknown"
 
-        # Build feature vector
+        # Build the same engineered feature contract used during training.
         try:
             import h3 as h3lib
             h3_cell = h3lib.latlng_to_cell(lat, lon, 7)
         except Exception:
             h3_cell = f"{round(lat, 3)}_{round(lon, 3)}"
+
+        historical = df[df["start_datetime"] < dt].copy() if df is not None else pd.DataFrame()
+        description = str(data.get("description", "")).lower()
+        hour_bin = (
+            "night" if dt.hour < 6 else "morning_rush" if dt.hour < 10 else
+            "midday" if dt.hour < 16 else "evening_rush" if dt.hour < 20 else "late_night"
+        )
+
+        def rolling_count(column, value, days):
+            if historical.empty or column not in historical:
+                return 0
+            cutoff = dt - pd.Timedelta(days=days)
+            return int(((historical[column] == value) & (historical["start_datetime"] >= cutoff)).sum())
+
+        def category_frequency(column, value):
+            if historical.empty or column not in historical:
+                return 0.0
+            return float((historical[column] == value).mean())
+
+        def nearby_count(radius_km):
+            if historical.empty:
+                return 0
+            distance = np.sqrt(
+                (historical["latitude"] - lat) ** 2 + (historical["longitude"] - lon) ** 2
+            )
+            return int((distance <= radius_km / 111.0).sum())
 
         feature_dict = {
             "event_type": event_type,
@@ -367,15 +400,36 @@ def predict():
             "day_of_week": dt.dayofweek,
             "month": dt.month,
             "is_weekend": 1 if dt.dayofweek >= 5 else 0,
-            "is_public_holiday": 0,  # Simplified for inference
-            "corridor_rolling_7d": 0,
-            "corridor_rolling_30d": 0,
-            "zone_rolling_7d": 0,
-            "zone_rolling_30d": 0,
-            "police_station_rolling_30d": 0,
+            "is_public_holiday": int(dt.strftime("%Y-%m-%d") in INDIAN_HOLIDAYS_REFERENCE),
+            "hour_sin": float(np.sin(2 * np.pi * dt.hour / 24)),
+            "hour_cos": float(np.cos(2 * np.pi * dt.hour / 24)),
+            "dow_sin": float(np.sin(2 * np.pi * dt.dayofweek / 7)),
+            "dow_cos": float(np.cos(2 * np.pi * dt.dayofweek / 7)),
+            "month_sin": float(np.sin(2 * np.pi * dt.month / 12)),
+            "month_cos": float(np.cos(2 * np.pi * dt.month / 12)),
+            "corridor_rolling_7d": rolling_count("corridor", corridor, 7),
+            "corridor_rolling_30d": rolling_count("corridor", corridor, 30),
+            "zone_rolling_7d": rolling_count("zone", zone, 7),
+            "zone_rolling_30d": rolling_count("zone", zone, 30),
+            "police_station_rolling_7d": rolling_count("police_station", police_station, 7),
+            "police_station_rolling_30d": rolling_count("police_station", police_station, 30),
             "zone_known": 1 if zone != "Zone_Unknown" else 0,
             "junction_known": 1 if junction != "Junction_Unknown" else 0,
-            "status": "active",  # New incident is active
+            "events_within_1km": nearby_count(1),
+            "events_within_3km": nearby_count(3),
+            "events_within_5km": nearby_count(5),
+            "police_station_freq": category_frequency("police_station", police_station),
+            "h3_cell_freq": category_frequency("h3_cell", h3_cell),
+            "corridor_freq": category_frequency("corridor", corridor),
+            "cause_x_corridor": f"{event_cause}_{corridor}",
+            "cause_x_hour_bin": f"{event_cause}_{hour_bin}",
+            "weekend_x_hour_bin": f"{int(dt.dayofweek >= 5)}_{hour_bin}",
+            "type_x_cause": f"{event_type}_{event_cause}",
+            "desc_has_accident": int("accident" in description),
+            "desc_has_tree": int("tree" in description),
+            "desc_has_fire": int("fire" in description),
+            "desc_has_vip": int("vip" in description),
+            "desc_has_protest": int("protest" in description),
         }
 
         results = {
@@ -502,6 +556,14 @@ MAX_DIVERSIONS = 3
 def _encode_features(feature_dict, feature_list, encoders):
     """Encode a single feature vector using the trained label encoders."""
     X = pd.DataFrame([feature_dict])
+
+    # v2 artifacts contain their preprocessing inside ModelBundle. Keep raw
+    # values here; the bundle will apply its fitted target encoder.
+    if encoders.get("__bundle__"):
+        for column in feature_list:
+            if column not in X:
+                X[column] = 0
+        return X[feature_list]
 
     # Only keep the features the model expects
     available = [f for f in feature_list if f in X.columns]

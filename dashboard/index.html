@@ -3,36 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Event Impact & Response Intelligence Platform — Real-time event severity, closure, and clearance-time prediction for Bengaluru traffic-disrupting incidents.">
-    <title>Event Command Center — Event Impact & Response Intelligence Platform</title>
+    <meta name="description" content="Event Command Center — Real-time event severity, closure, and clearance-time prediction for Bengaluru traffic-disrupting incidents.">
+    <title>Event Command Center — Bengaluru Traffic Intelligence</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet MarkerCluster -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <!-- Leaflet MarkerCluster JS -->
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <!-- ================================================================ -->
+    <!-- TOAST CONTAINER -->
+    <!-- ================================================================ -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- ================================================================ -->
     <!-- HEADER -->
     <!-- ================================================================ -->
     <header class="header">
         <div class="header-left">
-            <div class="logo-icon">🛡️</div>
+            <div class="logo-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+            </div>
             <div>
                 <div class="header-title">Event Command Center</div>
-                <div class="header-subtitle">Event Impact & Response Intelligence Platform</div>
+                <div class="header-subtitle">Bengaluru Traffic Intelligence Platform</div>
             </div>
         </div>
         <div class="header-right">
+            <div class="event-counter">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                <span id="headerEventCount">—</span> Events
+            </div>
             <div class="live-indicator">
                 <span class="live-dot"></span>
                 SYSTEM ACTIVE
@@ -45,19 +68,35 @@
     <!-- ================================================================ -->
     <nav class="nav-tabs" id="navTabs">
         <button class="nav-tab active" data-panel="map-panel" onclick="switchTab(this)">
-            <span class="nav-tab-icon">🗺️</span> Incident Map
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                <line x1="8" y1="2" x2="8" y2="18"/>
+                <line x1="16" y1="6" x2="16" y2="22"/>
+            </svg>
+            <span>Incident Map</span>
         </button>
         <button class="nav-tab" data-panel="predict-panel" onclick="switchTab(this)">
-            <span class="nav-tab-icon">🔮</span> New Incident
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span>New Incident</span>
         </button>
         <button class="nav-tab" data-panel="workload-panel" onclick="switchTab(this)">
-            <span class="nav-tab-icon">👮</span> Station Workload
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Station Workload</span>
         </button>
         <button class="nav-tab" data-panel="trends-panel" onclick="switchTab(this)">
-            <span class="nav-tab-icon">📊</span> Historical Trends
-        </button>
-        <button class="nav-tab" data-panel="methodology-panel" onclick="switchTab(this)">
-            <span class="nav-tab-icon">📋</span> Methodology & Limitations
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span>Historical Trends</span>
         </button>
     </nav>
 
@@ -73,47 +112,82 @@
             <!-- Summary Stats -->
             <div class="stats-row" id="statsRow">
                 <div class="stat-card">
-                    <div class="stat-icon purple">📊</div>
+                    <div class="stat-icon cyan">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
                     <div>
-                        <div class="stat-value" id="totalEvents">—</div>
+                        <div class="stat-value" id="totalEvents" data-target="0">—</div>
                         <div class="stat-label">Total Events</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon red">🔴</div>
+                    <div class="stat-icon red">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
                     <div>
-                        <div class="stat-value" id="highPriority">—</div>
+                        <div class="stat-value" id="highPriority" data-target="0">—</div>
                         <div class="stat-label">High Priority</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon green">🟢</div>
+                    <div class="stat-icon green">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
                     <div>
-                        <div class="stat-value" id="lowPriority">—</div>
+                        <div class="stat-value" id="lowPriority" data-target="0">—</div>
                         <div class="stat-label">Low Priority</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon amber">🚧</div>
+                    <div class="stat-icon amber">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="9" y1="3" x2="9" y2="21"/>
+                            <line x1="15" y1="3" x2="15" y2="21"/>
+                            <line x1="3" y1="9" x2="21" y2="9"/>
+                            <line x1="3" y1="15" x2="21" y2="15"/>
+                        </svg>
+                    </div>
                     <div>
-                        <div class="stat-value" id="closureCount">—</div>
+                        <div class="stat-value" id="closureCount" data-target="0">—</div>
                         <div class="stat-label">Road Closures</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon blue">🏗️</div>
+                    <div class="stat-icon violet">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="6"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                    </div>
                     <div>
-                        <div class="stat-value" id="hotspotCount">—</div>
+                        <div class="stat-value" id="hotspotCount" data-target="0">—</div>
                         <div class="stat-label">Hotspot Clusters</div>
                     </div>
                 </div>
             </div>
 
             <!-- Map -->
-            <div class="card">
-                <div class="card-title">
-                    <span class="card-title-icon">🗺️</span>
-                    Incident Map — Events by Priority with Hotspot Overlays
+            <div class="card map-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                            <line x1="8" y1="2" x2="8" y2="18"/>
+                            <line x1="16" y1="6" x2="16" y2="22"/>
+                        </svg>
+                        Incident Map — Events by Priority with Hotspot Overlays
+                    </div>
                 </div>
                 <div class="map-container" id="incidentMap"></div>
             </div>
@@ -124,11 +198,17 @@
         <!-- ============================================================ -->
         <section id="predict-panel" class="panel">
             <div class="card">
-                <div class="card-title">
-                    <span class="card-title-icon">🔮</span>
-                    Report New Incident — Get Predictions
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        Report New Incident — Get Predictions
+                    </div>
                 </div>
-                <p style="color: var(--text-secondary); margin-bottom: var(--space-lg); font-size: 0.85rem;">
+                <p class="card-description">
                     Enter incident details below. The system will predict severity (priority), road closure likelihood,
                     expected clearance time, and suggest heuristic diversions based on historical patterns.
                 </p>
@@ -184,32 +264,57 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Date & Time</label>
+                        <label class="form-label">Date &amp; Time</label>
                         <input type="datetime-local" class="form-input" id="inputDatetime">
                     </div>
                 </div>
 
-                <div style="margin-top: var(--space-lg);">
+                <div class="form-actions">
                     <button class="btn btn-primary" onclick="submitPrediction()" id="predictBtn">
-                        ⚡ Get Predictions
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        Get Predictions
                     </button>
                 </div>
             </div>
 
             <!-- Prediction Results -->
-            <div id="predictionResults" style="display: none;">
+            <div id="predictionResults" class="prediction-results-wrapper" style="display: none;">
                 <div class="prediction-results">
                     <div class="prediction-card" id="predPriority">
+                        <div class="prediction-icon-wrap priority-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
                         <div class="prediction-label">Predicted Priority</div>
                         <div class="prediction-value" id="predPriorityValue">—</div>
                         <div class="prediction-confidence" id="predPriorityConf"></div>
                     </div>
                     <div class="prediction-card" id="predClosure">
+                        <div class="prediction-icon-wrap closure-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="9" y1="3" x2="9" y2="21"/>
+                                <line x1="15" y1="3" x2="15" y2="21"/>
+                                <line x1="3" y1="9" x2="21" y2="9"/>
+                                <line x1="3" y1="15" x2="21" y2="15"/>
+                            </svg>
+                        </div>
                         <div class="prediction-label">Road Closure Required</div>
                         <div class="prediction-value" id="predClosureValue">—</div>
                         <div class="prediction-confidence" id="predClosureConf"></div>
                     </div>
                     <div class="prediction-card" id="predClearance">
+                        <div class="prediction-icon-wrap clearance-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
                         <div class="prediction-label">Expected Clearance Time</div>
                         <div class="prediction-value time" id="predClearanceValue">—</div>
                         <div class="prediction-confidence" id="predClearanceConf"></div>
@@ -217,18 +322,41 @@
                 </div>
 
                 <!-- Additional Context -->
-                <div class="two-col" style="margin-top: var(--space-lg);">
+                <div class="context-grid">
                     <div class="card">
-                        <div class="card-title"><span class="card-title-icon">📍</span> Inferred Location Context</div>
-                        <div id="locationContext" style="font-size: 0.85rem; color: var(--text-secondary);"></div>
+                        <div class="card-header">
+                            <div class="card-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                    <circle cx="12" cy="10" r="3"/>
+                                </svg>
+                                Inferred Location Context
+                            </div>
+                        </div>
+                        <div id="locationContext" class="context-body"></div>
                     </div>
                     <div class="card">
-                        <div class="card-title"><span class="card-title-icon">🔀</span> Heuristic Diversion Suggestion</div>
-                        <div id="diversionContext" style="font-size: 0.85rem; color: var(--text-secondary);"></div>
+                        <div class="card-header">
+                            <div class="card-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="16 3 21 3 21 8"/>
+                                    <line x1="4" y1="20" x2="21" y2="3"/>
+                                    <polyline points="21 16 21 21 16 21"/>
+                                    <line x1="15" y1="15" x2="21" y2="21"/>
+                                    <line x1="4" y1="4" x2="9" y2="9"/>
+                                </svg>
+                                Heuristic Diversion Suggestion
+                            </div>
+                        </div>
+                        <div id="diversionContext" class="context-body"></div>
                         <div class="diversion-disclosure">
-                            ⚠️ Heuristic Diversion Suggestion (historical co-occurrence based).
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Heuristic Diversion Suggestion (historical co-occurrence based).
                             This is NOT a routing algorithm or shortest-path calculation.
-                            No road-network graph data exists in this dataset.
                         </div>
                     </div>
                 </div>
@@ -240,9 +368,16 @@
         <!-- ============================================================ -->
         <section id="workload-panel" class="panel">
             <div class="card">
-                <div class="card-title">
-                    <span class="card-title-icon">👮</span>
-                    Police Station Workload — Historical Event Load
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        Police Station Workload — Historical Event Load
+                    </div>
                 </div>
 
                 <div class="filter-row">
@@ -254,11 +389,17 @@
                         <label class="form-label">End Date</label>
                         <input type="date" class="form-input" id="workloadEndDate">
                     </div>
-                    <button class="btn btn-primary" onclick="loadWorkload()">🔄 Update</button>
+                    <button class="btn btn-primary btn-sm" onclick="loadWorkload()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"/>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                        </svg>
+                        Update
+                    </button>
                 </div>
 
-                <div class="two-col">
-                    <div>
+                <div class="workload-grid">
+                    <div class="chart-wrap">
                         <div class="chart-container">
                             <canvas id="workloadChart"></canvas>
                         </div>
@@ -275,7 +416,7 @@
                                 </tr>
                             </thead>
                             <tbody id="workloadTableBody">
-                                <tr><td colspan="5" class="loading-overlay"><div class="spinner"></div></td></tr>
+                                <tr><td colspan="5" class="loading-cell"><div class="skeleton-loader"></div></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -288,9 +429,13 @@
         <!-- ============================================================ -->
         <section id="trends-panel" class="panel">
             <div class="card">
-                <div class="card-title">
-                    <span class="card-title-icon">📊</span>
-                    Historical Trends — Event Counts Over Time
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                        Historical Trends — Event Patterns Over Time
+                    </div>
                 </div>
 
                 <div class="filter-row">
@@ -315,26 +460,26 @@
                 </div>
 
                 <div class="charts-grid">
-                    <div class="card">
-                        <div class="card-title">Monthly Event Volume</div>
+                    <div class="card chart-card">
+                        <div class="card-title chart-card-title">Monthly Event Volume</div>
                         <div class="chart-container">
                             <canvas id="monthlyChart"></canvas>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">Hourly Distribution</div>
+                    <div class="card chart-card">
+                        <div class="card-title chart-card-title">Hourly Distribution</div>
                         <div class="chart-container">
                             <canvas id="hourlyChart"></canvas>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">Day of Week Distribution</div>
+                    <div class="card chart-card">
+                        <div class="card-title chart-card-title">Day of Week Distribution</div>
                         <div class="chart-container">
                             <canvas id="dailyChart"></canvas>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">Event Cause Breakdown</div>
+                    <div class="card chart-card">
+                        <div class="card-title chart-card-title">Event Cause Breakdown</div>
                         <div class="chart-container">
                             <canvas id="causeChart"></canvas>
                         </div>
@@ -343,108 +488,9 @@
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- PANEL 5: METHODOLOGY & LIMITATIONS (REQUIRED — NOT OPTIONAL) -->
-        <!-- ============================================================ -->
-        <section id="methodology-panel" class="panel">
-            <div class="card methodology-content">
-                <div class="card-title">
-                    <span class="card-title-icon">📋</span>
-                    Methodology & Limitations — Required Disclosure
-                </div>
-
-                <div class="disclosure-box">
-                    <h4>⚠️ Honest Reframing — Critical Disclosure</h4>
-                    <p>
-                        This system <strong>does not predict traffic congestion, vehicle counts, or delay duration
-                        in minutes of traffic</strong>, because the dataset contains no traffic flow, speed, or volume
-                        measurements. Instead, it predicts three real, label-backed outcomes — <strong>event severity</strong>,
-                        <strong>road-closure likelihood</strong>, and <strong>clearance time</strong> — and uses
-                        historical spatio-temporal patterns to recommend resource deployment and diversion zones.
-                        This is a deliberate, disclosed scope decision, not a limitation discovered after the fact.
-                    </p>
-                </div>
-
-                <div class="methodology-section">
-                    <h3>🎯 What This System Predicts</h3>
-                    <ul>
-                        <li><strong>Priority Classification (High/Low)</strong> — Predicted the moment an event is reported, using LightGBM classifier on spatial, temporal, and operational features.</li>
-                        <li><strong>Road Closure Requirement (Yes/No)</strong> — Predicted at report time using the same model family.</li>
-                        <li><strong>Clearance Time (minutes)</strong> — How long the disruption will last, predicted via LightGBM regressor on the subset of events with known outcomes (closed/resolved status only).</li>
-                    </ul>
-                </div>
-
-                <div class="methodology-section">
-                    <h3>📊 Model Performance</h3>
-                    <div class="model-metrics-grid" id="methodologyMetrics">
-                        <div class="loading-overlay"><div class="spinner"></div> Loading metrics...</div>
-                    </div>
-                </div>
-
-                <div class="methodology-section">
-                    <h3>🗺️ Hotspot & Workload Intelligence</h3>
-                    <p>
-                        Geographic hotspots are identified using HDBSCAN density-based clustering on latitude/longitude
-                        coordinates. This finds genuine incident concentration zones independent of administrative boundaries.
-                        Police station workload is computed from rolling historical event counts.
-                    </p>
-                </div>
-
-                <div class="methodology-section">
-                    <h3>🔀 Diversion Recommendations</h3>
-                    <p>
-                        Diversion suggestions are <strong>heuristic and co-occurrence-based</strong>, not network-routing-based.
-                        For each corridor, we identify which other corridors historically had concurrent events and recommend
-                        alternatives that historically did NOT have simultaneous incidents. Since <code>route_path</code> is
-                        98.3% empty and no road-network graph data exists, this is explicitly a heuristic layer.
-                    </p>
-                </div>
-
-                <div class="disclosure-box">
-                    <h4>⚠️ Known Limitations</h4>
-                    <p>
-                        <strong>1. Clearance-time model</strong> is trained on only ~39% of the dataset (closed/resolved
-                        events). Active (ongoing) events are excluded as right-censored data — including them would bias
-                        the model toward underestimating duration.<br><br>
-                        <strong>2. Event coverage</strong>: 94.3% of records are unplanned, 5.7% planned. The system is
-                        validated primarily on unplanned incidents.<br><br>
-                        <strong>3. Zone/Junction coverage</strong>: Zone is 42% populated, junction is 31% populated.
-                        These are used as secondary features with explicit "known/unknown" flags.<br><br>
-                        <strong>4. Priority labels</strong> reflect operational/subjective police judgment, not an independent
-                        severity measurement.<br><br>
-                        <strong>5. Holiday calendar</strong> uses a static hardcoded reference table of Indian national and
-                        Karnataka state holidays — this is not an external dataset but a fixed calendar fact.
-                    </p>
-                </div>
-
-                <div class="methodology-section">
-                    <h3>🏗️ System Architecture</h3>
-                    <ul>
-                        <li><strong>Data Layer:</strong> Cleaned, feature-engineered dataset with documented exclusions</li>
-                        <li><strong>Modeling Layer:</strong> 3 LightGBM models + HDBSCAN clustering + heuristic diversion lookup</li>
-                        <li><strong>Inference API:</strong> Flask REST API accepting new incident reports</li>
-                        <li><strong>Dashboard:</strong> This Event Command Center with live incident map, prediction form, workload panel, trends, and methodology disclosure</li>
-                        <li><strong>Post-Event Learning:</strong> Rolling hotspot/workload statistics recalculated as new records close</li>
-                    </ul>
-                </div>
-
-                <div class="methodology-section">
-                    <h3>📦 Dataset Summary</h3>
-                    <ul>
-                        <li><strong>Source:</strong> Astram Event Data (Anonymized) — 8,173 records of traffic-disrupting events in Bengaluru</li>
-                        <li><strong>Features used:</strong> Event type, cause, location (lat/long, corridor, zone, junction, police station), temporal (hour, day, month, weekend, holiday), vehicle type, rolling event counts</li>
-                        <li><strong>Features dropped:</strong> 27 columns with >90% missing data, high-cardinality IDs, admin metadata</li>
-                        <li><strong>No external data:</strong> No APIs, scraped data, or internet-sourced datasets used (holiday calendar is a static reference table)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
     </main>
 
-    <!-- ================================================================ -->
-    <!-- JAVASCRIPT -->
-    <!-- ================================================================ -->
+    <!-- JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>

@@ -9,3 +9,7 @@ flask>=3.0
 flask-cors>=4.0
 shap>=0.43
 gunicorn>=21.2
+scipy>=1.10
+matplotlib>=3.8
+optuna>=3.4
+category-encoders>=2.6
