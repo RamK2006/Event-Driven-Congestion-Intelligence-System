@@ -1,0 +1,14 @@
+{
+  "model_a": {
+    "train": 6536,
+    "test": 1635
+  },
+  "model_b": {
+    "train": 6538,
+    "test": 1635
+  },
+  "model_c": {
+    "train": 2564,
+    "test": 641
+  }
+}

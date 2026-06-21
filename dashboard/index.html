@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Event Impact & Response Intelligence Platform — Real-time event severity, closure, and clearance-time prediction for Bengaluru traffic-disrupting incidents.">
+    <title>Event Command Center — Event Impact & Response Intelligence Platform</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet MarkerCluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ================================================================ -->
+    <!-- HEADER -->
+    <!-- ================================================================ -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-icon">🛡️</div>
+            <div>
+                <div class="header-title">Event Command Center</div>
+                <div class="header-subtitle">Event Impact & Response Intelligence Platform</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                SYSTEM ACTIVE
+            </div>
+        </div>
+    </header>
+
+    <!-- ================================================================ -->
+    <!-- NAVIGATION TABS -->
+    <!-- ================================================================ -->
+    <nav class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" data-panel="map-panel" onclick="switchTab(this)">
+            <span class="nav-tab-icon">🗺️</span> Incident Map
+        </button>
+        <button class="nav-tab" data-panel="predict-panel" onclick="switchTab(this)">
+            <span class="nav-tab-icon">🔮</span> New Incident
+        </button>
+        <button class="nav-tab" data-panel="workload-panel" onclick="switchTab(this)">
+            <span class="nav-tab-icon">👮</span> Station Workload
+        </button>
+        <button class="nav-tab" data-panel="trends-panel" onclick="switchTab(this)">
+            <span class="nav-tab-icon">📊</span> Historical Trends
+        </button>
+        <button class="nav-tab" data-panel="methodology-panel" onclick="switchTab(this)">
+            <span class="nav-tab-icon">📋</span> Methodology & Limitations
+        </button>
+    </nav>
+
+    <!-- ================================================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================================================ -->
+    <main class="main-content">
+
+        <!-- ============================================================ -->
+        <!-- PANEL 1: INCIDENT MAP -->
+        <!-- ============================================================ -->
+        <section id="map-panel" class="panel active">
+            <!-- Summary Stats -->
+            <div class="stats-row" id="statsRow">
+                <div class="stat-card">
+                    <div class="stat-icon purple">📊</div>
+                    <div>
+                        <div class="stat-value" id="totalEvents">—</div>
+                        <div class="stat-label">Total Events</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red">🔴</div>
+                    <div>
+                        <div class="stat-value" id="highPriority">—</div>
+                        <div class="stat-label">High Priority</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">🟢</div>
+                    <div>
+                        <div class="stat-value" id="lowPriority">—</div>
+                        <div class="stat-label">Low Priority</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">🚧</div>
+                    <div>
+                        <div class="stat-value" id="closureCount">—</div>
+                        <div class="stat-label">Road Closures</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">🏗️</div>
+                    <div>
+                        <div class="stat-value" id="hotspotCount">—</div>
+                        <div class="stat-label">Hotspot Clusters</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="card-title-icon">🗺️</span>
+                    Incident Map — Events by Priority with Hotspot Overlays
+                </div>
+                <div class="map-container" id="incidentMap"></div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PANEL 2: NEW INCIDENT (PREDICTION) -->
+        <!-- ============================================================ -->
+        <section id="predict-panel" class="panel">
+            <div class="card">
+                <div class="card-title">
+                    <span class="card-title-icon">🔮</span>
+                    Report New Incident — Get Predictions
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: var(--space-lg); font-size: 0.85rem;">
+                    Enter incident details below. The system will predict severity (priority), road closure likelihood,
+                    expected clearance time, and suggest heuristic diversions based on historical patterns.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Latitude</label>
+                        <input type="number" step="any" class="form-input" id="inputLat" placeholder="e.g. 12.9716" value="12.9716">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Longitude</label>
+                        <input type="number" step="any" class="form-input" id="inputLon" placeholder="e.g. 77.5946" value="77.5946">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Event Cause</label>
+                        <select class="form-select" id="inputCause">
+                            <option value="vehicle_breakdown">Vehicle Breakdown</option>
+                            <option value="accident">Accident</option>
+                            <option value="pot_holes">Pot Holes</option>
+                            <option value="construction">Construction</option>
+                            <option value="water_logging">Water Logging</option>
+                            <option value="tree_fall">Tree Fall</option>
+                            <option value="road_conditions">Road Conditions</option>
+                            <option value="congestion">Congestion</option>
+                            <option value="public_event">Public Event</option>
+                            <option value="procession">Procession</option>
+                            <option value="vip_movement">VIP Movement</option>
+                            <option value="protest">Protest</option>
+                            <option value="others">Others</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vehicle Type (Optional)</label>
+                        <select class="form-select" id="inputVehType">
+                            <option value="Unknown_VehType">Unknown</option>
+                            <option value="heavy_vehicle">Heavy Vehicle</option>
+                            <option value="bmtc_bus">BMTC Bus</option>
+                            <option value="lcv">LCV</option>
+                            <option value="private_car">Private Car</option>
+                            <option value="private_bus">Private Bus</option>
+                            <option value="truck">Truck</option>
+                            <option value="ksrtc_bus">KSRTC Bus</option>
+                            <option value="taxi">Taxi</option>
+                            <option value="auto">Auto</option>
+                            <option value="others">Others</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Event Type</label>
+                        <select class="form-select" id="inputEventType">
+                            <option value="unplanned">Unplanned</option>
+                            <option value="planned">Planned</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date & Time</label>
+                        <input type="datetime-local" class="form-input" id="inputDatetime">
+                    </div>
+                </div>
+
+                <div style="margin-top: var(--space-lg);">
+                    <button class="btn btn-primary" onclick="submitPrediction()" id="predictBtn">
+                        ⚡ Get Predictions
+                    </button>
+                </div>
+            </div>
+
+            <!-- Prediction Results -->
+            <div id="predictionResults" style="display: none;">
+                <div class="prediction-results">
+                    <div class="prediction-card" id="predPriority">
+                        <div class="prediction-label">Predicted Priority</div>
+                        <div class="prediction-value" id="predPriorityValue">—</div>
+                        <div class="prediction-confidence" id="predPriorityConf"></div>
+                    </div>
+                    <div class="prediction-card" id="predClosure">
+                        <div class="prediction-label">Road Closure Required</div>
+                        <div class="prediction-value" id="predClosureValue">—</div>
+                        <div class="prediction-confidence" id="predClosureConf"></div>
+                    </div>
+                    <div class="prediction-card" id="predClearance">
+                        <div class="prediction-label">Expected Clearance Time</div>
+                        <div class="prediction-value time" id="predClearanceValue">—</div>
+                        <div class="prediction-confidence" id="predClearanceConf"></div>
+                    </div>
+                </div>
+
+                <!-- Additional Context -->
+                <div class="two-col" style="margin-top: var(--space-lg);">
+                    <div class="card">
+                        <div class="card-title"><span class="card-title-icon">📍</span> Inferred Location Context</div>
+                        <div id="locationContext" style="font-size: 0.85rem; color: var(--text-secondary);"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title"><span class="card-title-icon">🔀</span> Heuristic Diversion Suggestion</div>
+                        <div id="diversionContext" style="font-size: 0.85rem; color: var(--text-secondary);"></div>
+                        <div class="diversion-disclosure">
+                            ⚠️ Heuristic Diversion Suggestion (historical co-occurrence based).
+                            This is NOT a routing algorithm or shortest-path calculation.
+                            No road-network graph data exists in this dataset.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PANEL 3: POLICE STATION WORKLOAD -->
+        <!-- ============================================================ -->
+        <section id="workload-panel" class="panel">
+            <div class="card">
+                <div class="card-title">
+                    <span class="card-title-icon">👮</span>
+                    Police Station Workload — Historical Event Load
+                </div>
+
+                <div class="filter-row">
+                    <div class="form-group">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-input" id="workloadStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-input" id="workloadEndDate">
+                    </div>
+                    <button class="btn btn-primary" onclick="loadWorkload()">🔄 Update</button>
+                </div>
+
+                <div class="two-col">
+                    <div>
+                        <div class="chart-container">
+                            <canvas id="workloadChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="workloadTable">
+                            <thead>
+                                <tr>
+                                    <th>Police Station</th>
+                                    <th>Total Events</th>
+                                    <th>High Priority</th>
+                                    <th>Low Priority</th>
+                                    <th>Road Closures</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workloadTableBody">
+                                <tr><td colspan="5" class="loading-overlay"><div class="spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PANEL 4: HISTORICAL TRENDS -->
+        <!-- ============================================================ -->
+        <section id="trends-panel" class="panel">
+            <div class="card">
+                <div class="card-title">
+                    <span class="card-title-icon">📊</span>
+                    Historical Trends — Event Counts Over Time
+                </div>
+
+                <div class="filter-row">
+                    <div class="form-group">
+                        <label class="form-label">Event Cause</label>
+                        <select class="form-select" id="trendCauseFilter" onchange="loadTrends()">
+                            <option value="all">All Causes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Corridor</label>
+                        <select class="form-select" id="trendCorridorFilter" onchange="loadTrends()">
+                            <option value="all">All Corridors</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Zone</label>
+                        <select class="form-select" id="trendZoneFilter" onchange="loadTrends()">
+                            <option value="all">All Zones</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-title">Monthly Event Volume</div>
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Hourly Distribution</div>
+                        <div class="chart-container">
+                            <canvas id="hourlyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Day of Week Distribution</div>
+                        <div class="chart-container">
+                            <canvas id="dailyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Event Cause Breakdown</div>
+                        <div class="chart-container">
+                            <canvas id="causeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- PANEL 5: METHODOLOGY & LIMITATIONS (REQUIRED — NOT OPTIONAL) -->
+        <!-- ============================================================ -->
+        <section id="methodology-panel" class="panel">
+            <div class="card methodology-content">
+                <div class="card-title">
+                    <span class="card-title-icon">📋</span>
+                    Methodology & Limitations — Required Disclosure
+                </div>
+
+                <div class="disclosure-box">
+                    <h4>⚠️ Honest Reframing — Critical Disclosure</h4>
+                    <p>
+                        This system <strong>does not predict traffic congestion, vehicle counts, or delay duration
+                        in minutes of traffic</strong>, because the dataset contains no traffic flow, speed, or volume
+                        measurements. Instead, it predicts three real, label-backed outcomes — <strong>event severity</strong>,
+                        <strong>road-closure likelihood</strong>, and <strong>clearance time</strong> — and uses
+                        historical spatio-temporal patterns to recommend resource deployment and diversion zones.
+                        This is a deliberate, disclosed scope decision, not a limitation discovered after the fact.
+                    </p>
+                </div>
+
+                <div class="methodology-section">
+                    <h3>🎯 What This System Predicts</h3>
+                    <ul>
+                        <li><strong>Priority Classification (High/Low)</strong> — Predicted the moment an event is reported, using LightGBM classifier on spatial, temporal, and operational features.</li>
+                        <li><strong>Road Closure Requirement (Yes/No)</strong> — Predicted at report time using the same model family.</li>
+                        <li><strong>Clearance Time (minutes)</strong> — How long the disruption will last, predicted via LightGBM regressor on the subset of events with known outcomes (closed/resolved status only).</li>
+                    </ul>
+                </div>
+
+                <div class="methodology-section">
+                    <h3>📊 Model Performance</h3>
+                    <div class="model-metrics-grid" id="methodologyMetrics">
+                        <div class="loading-overlay"><div class="spinner"></div> Loading metrics...</div>
+                    </div>
+                </div>
+
+                <div class="methodology-section">
+                    <h3>🗺️ Hotspot & Workload Intelligence</h3>
+                    <p>
+                        Geographic hotspots are identified using HDBSCAN density-based clustering on latitude/longitude
+                        coordinates. This finds genuine incident concentration zones independent of administrative boundaries.
+                        Police station workload is computed from rolling historical event counts.
+                    </p>
+                </div>
+
+                <div class="methodology-section">
+                    <h3>🔀 Diversion Recommendations</h3>
+                    <p>
+                        Diversion suggestions are <strong>heuristic and co-occurrence-based</strong>, not network-routing-based.
+                        For each corridor, we identify which other corridors historically had concurrent events and recommend
+                        alternatives that historically did NOT have simultaneous incidents. Since <code>route_path</code> is
+                        98.3% empty and no road-network graph data exists, this is explicitly a heuristic layer.
+                    </p>
+                </div>
+
+                <div class="disclosure-box">
+                    <h4>⚠️ Known Limitations</h4>
+                    <p>
+                        <strong>1. Clearance-time model</strong> is trained on only ~39% of the dataset (closed/resolved
+                        events). Active (ongoing) events are excluded as right-censored data — including them would bias
+                        the model toward underestimating duration.<br><br>
+                        <strong>2. Event coverage</strong>: 94.3% of records are unplanned, 5.7% planned. The system is
+                        validated primarily on unplanned incidents.<br><br>
+                        <strong>3. Zone/Junction coverage</strong>: Zone is 42% populated, junction is 31% populated.
+                        These are used as secondary features with explicit "known/unknown" flags.<br><br>
+                        <strong>4. Priority labels</strong> reflect operational/subjective police judgment, not an independent
+                        severity measurement.<br><br>
+                        <strong>5. Holiday calendar</strong> uses a static hardcoded reference table of Indian national and
+                        Karnataka state holidays — this is not an external dataset but a fixed calendar fact.
+                    </p>
+                </div>
+
+                <div class="methodology-section">
+                    <h3>🏗️ System Architecture</h3>
+                    <ul>
+                        <li><strong>Data Layer:</strong> Cleaned, feature-engineered dataset with documented exclusions</li>
+                        <li><strong>Modeling Layer:</strong> 3 LightGBM models + HDBSCAN clustering + heuristic diversion lookup</li>
+                        <li><strong>Inference API:</strong> Flask REST API accepting new incident reports</li>
+                        <li><strong>Dashboard:</strong> This Event Command Center with live incident map, prediction form, workload panel, trends, and methodology disclosure</li>
+                        <li><strong>Post-Event Learning:</strong> Rolling hotspot/workload statistics recalculated as new records close</li>
+                    </ul>
+                </div>
+
+                <div class="methodology-section">
+                    <h3>📦 Dataset Summary</h3>
+                    <ul>
+                        <li><strong>Source:</strong> Astram Event Data (Anonymized) — 8,173 records of traffic-disrupting events in Bengaluru</li>
+                        <li><strong>Features used:</strong> Event type, cause, location (lat/long, corridor, zone, junction, police station), temporal (hour, day, month, weekend, holiday), vehicle type, rolling event counts</li>
+                        <li><strong>Features dropped:</strong> 27 columns with >90% missing data, high-cardinality IDs, admin metadata</li>
+                        <li><strong>No external data:</strong> No APIs, scraped data, or internet-sourced datasets used (holiday calendar is a static reference table)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================================================================ -->
+    <!-- JAVASCRIPT -->
+    <!-- ================================================================ -->
+    <script src="app.js"></script>
+</body>
+</html>

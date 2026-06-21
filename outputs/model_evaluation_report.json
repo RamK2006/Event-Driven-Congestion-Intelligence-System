@@ -1,0 +1,394 @@
+{
+  "model_a": {
+    "model_name": "Model A: Priority Classifier",
+    "algorithm": "LightGBM Classifier",
+    "best_params": {
+      "subsample": 0.7,
+      "num_leaves": 127,
+      "n_estimators": 500,
+      "min_child_samples": 20,
+      "max_depth": 7,
+      "learning_rate": 0.01,
+      "colsample_bytree": 0.7
+    },
+    "search_space": {
+      "n_estimators": [
+        "100",
+        "200",
+        "300",
+        "500",
+        "800"
+      ],
+      "max_depth": [
+        "3",
+        "5",
+        "7",
+        "10",
+        "15",
+        "-1"
+      ],
+      "learning_rate": [
+        "0.01",
+        "0.05",
+        "0.1",
+        "0.2"
+      ],
+      "num_leaves": [
+        "31",
+        "50",
+        "80",
+        "127"
+      ],
+      "min_child_samples": [
+        "5",
+        "10",
+        "20",
+        "50"
+      ],
+      "subsample": [
+        "0.7",
+        "0.8",
+        "0.9",
+        "1.0"
+      ],
+      "colsample_bytree": [
+        "0.7",
+        "0.8",
+        "0.9",
+        "1.0"
+      ]
+    },
+    "tuning_iterations": 20,
+    "best_cv_roc_auc": 0.9998,
+    "train_size": 6536,
+    "test_size": 1635,
+    "classification_report": {
+      "High": {
+        "precision": 0.9990059642147118,
+        "recall": 0.9990059642147118,
+        "f1-score": 0.9990059642147118,
+        "support": 1006.0
+      },
+      "Low": {
+        "precision": 0.9984101748807631,
+        "recall": 0.9984101748807631,
+        "f1-score": 0.9984101748807631,
+        "support": 629.0
+      },
+      "accuracy": 0.998776758409786,
+      "macro avg": {
+        "precision": 0.9987080695477375,
+        "recall": 0.9987080695477375,
+        "f1-score": 0.9987080695477375,
+        "support": 1635.0
+      },
+      "weighted avg": {
+        "precision": 0.998776758409786,
+        "recall": 0.998776758409786,
+        "f1-score": 0.998776758409786,
+        "support": 1635.0
+      }
+    },
+    "roc_auc": 1.0,
+    "feature_importance": {
+      "corridor_rolling_7d": 3033,
+      "police_station_rolling_30d": 2608,
+      "corridor_rolling_30d": 2346,
+      "zone_rolling_30d": 2215,
+      "longitude": 2206,
+      "police_station": 1824,
+      "latitude": 1420,
+      "h3_cell": 1302,
+      "zone_rolling_7d": 1279,
+      "event_cause": 1111,
+      "corridor": 995,
+      "day_of_week": 879,
+      "status": 766,
+      "hour_of_day": 610,
+      "month": 578,
+      "zone": 572,
+      "junction": 528,
+      "veh_type": 309,
+      "is_weekend": 83,
+      "junction_known": 33,
+      "zone_known": 19,
+      "is_public_holiday": 5,
+      "event_type": 1
+    }
+  },
+  "model_b": {
+    "model_name": "Model B: Closure Classifier",
+    "algorithm": "LightGBM Classifier",
+    "best_params": {
+      "subsample": 0.7,
+      "num_leaves": 127,
+      "n_estimators": 500,
+      "min_child_samples": 20,
+      "max_depth": 7,
+      "learning_rate": 0.01,
+      "colsample_bytree": 0.7
+    },
+    "search_space": {
+      "n_estimators": [
+        "100",
+        "200",
+        "300",
+        "500",
+        "800"
+      ],
+      "max_depth": [
+        "3",
+        "5",
+        "7",
+        "10",
+        "15",
+        "-1"
+      ],
+      "learning_rate": [
+        "0.01",
+        "0.05",
+        "0.1",
+        "0.2"
+      ],
+      "num_leaves": [
+        "31",
+        "50",
+        "80",
+        "127"
+      ],
+      "min_child_samples": [
+        "5",
+        "10",
+        "20",
+        "50"
+      ],
+      "subsample": [
+        "0.7",
+        "0.8",
+        "0.9",
+        "1.0"
+      ],
+      "colsample_bytree": [
+        "0.7",
+        "0.8",
+        "0.9",
+        "1.0"
+      ]
+    },
+    "tuning_iterations": 20,
+    "best_cv_roc_auc": 0.7995,
+    "train_size": 6538,
+    "test_size": 1635,
+    "classification_report": {
+      "0": {
+        "precision": 0.9527777777777777,
+        "recall": 0.9146666666666666,
+        "f1-score": 0.9333333333333333,
+        "support": 1500.0
+      },
+      "1": {
+        "precision": 0.3435897435897436,
+        "recall": 0.4962962962962963,
+        "f1-score": 0.40606060606060607,
+        "support": 135.0
+      },
+      "accuracy": 0.8801223241590214,
+      "macro avg": {
+        "precision": 0.6481837606837606,
+        "recall": 0.7054814814814815,
+        "f1-score": 0.6696969696969697,
+        "support": 1635.0
+      },
+      "weighted avg": {
+        "precision": 0.9024778483494079,
+        "recall": 0.8801223241590214,
+        "f1-score": 0.8897970530998054,
+        "support": 1635.0
+      }
+    },
+    "roc_auc": 0.7788,
+    "feature_importance": {
+      "latitude": 2812,
+      "longitude": 2293,
+      "corridor_rolling_7d": 2236,
+      "zone_rolling_7d": 2195,
+      "corridor_rolling_30d": 2150,
+      "zone_rolling_30d": 2027,
+      "police_station_rolling_30d": 2006,
+      "h3_cell": 1638,
+      "hour_of_day": 1593,
+      "event_cause": 1362,
+      "police_station": 1218,
+      "veh_type": 910,
+      "day_of_week": 881,
+      "corridor": 754,
+      "month": 505,
+      "zone": 483,
+      "event_type": 364,
+      "junction": 199,
+      "status": 115,
+      "is_public_holiday": 89,
+      "junction_known": 89,
+      "is_weekend": 56,
+      "zone_known": 14
+    }
+  },
+  "model_c": {
+    "model_name": "Model C: Clearance Time Regressor",
+    "algorithm": "LightGBM Regressor",
+    "best_params": {
+      "subsample": 0.7,
+      "num_leaves": 50,
+      "n_estimators": 100,
+      "min_child_samples": 10,
+      "max_depth": -1,
+      "learning_rate": 0.05,
+      "colsample_bytree": 0.8
+    },
+    "search_space": {
+      "n_estimators": [
+        "100",
+        "200",
+        "300",
+        "500",
+        "800"
+      ],
+      "max_depth": [
+        "3",
+        "5",
+        "7",
+        "10",
+        "15",
+        "-1"
+      ],
+      "learning_rate": [
+        "0.01",
+        "0.05",
+        "0.1",
+        "0.2"
+      ],
+      "num_leaves": [
+        "31",
+        "50",
+        "80",
+        "127"
+      ],
+      "min_child_samples": [
+        "5",
+        "10",
+        "20",
+        "50"
+      ],
+      "subsample": [
+        "0.7",
+        "0.8",
+        "0.9",
+        "1.0"
+      ],
+      "colsample_bytree": [
+        "0.7",
+        "0.8",
+        "0.9",
+        "1.0"
+      ]
+    },
+    "tuning_iterations": 20,
+    "best_cv_mae": 1533.6151,
+    "train_size": 2564,
+    "test_size": 641,
+    "test_mae_minutes": 1339.86,
+    "test_rmse_minutes": 2440.08,
+    "error_by_event_cause": {
+      "accident": {
+        "count": 22,
+        "mae": 606.69,
+        "mean_actual": 49.35,
+        "mean_predicted": 619.81
+      },
+      "congestion": {
+        "count": 7,
+        "mae": 984.69,
+        "mean_actual": 58.35,
+        "mean_predicted": 1043.03
+      },
+      "construction": {
+        "count": 22,
+        "mae": 4055.5,
+        "mean_actual": 4870.44,
+        "mean_predicted": 4744.77
+      },
+      "others": {
+        "count": 88,
+        "mae": 3563.74,
+        "mean_actual": 2693.89,
+        "mean_predicted": 3989.23
+      },
+      "pot_holes": {
+        "count": 38,
+        "mae": 2733.18,
+        "mean_actual": 7253.72,
+        "mean_predicted": 6177.45
+      },
+      "procession": {
+        "count": 2,
+        "mae": 2065.17,
+        "mean_actual": 11.16,
+        "mean_predicted": 2076.33
+      },
+      "protest": {
+        "count": 1,
+        "mae": 1208.92,
+        "mean_actual": 30.67,
+        "mean_predicted": 1239.58
+      },
+      "road_conditions": {
+        "count": 12,
+        "mae": 3935.62,
+        "mean_actual": 6685.78,
+        "mean_predicted": 4448.39
+      },
+      "tree_fall": {
+        "count": 29,
+        "mae": 2891.85,
+        "mean_actual": 2685.07,
+        "mean_predicted": 3557.57
+      },
+      "vehicle_breakdown": {
+        "count": 370,
+        "mae": 59.12,
+        "mean_actual": 50.91,
+        "mean_predicted": 78.39
+      },
+      "water_logging": {
+        "count": 50,
+        "mae": 3472.29,
+        "mean_actual": 4643.89,
+        "mean_predicted": 4072.93
+      }
+    },
+    "feature_importance": {
+      "zone_rolling_30d": 503,
+      "zone_rolling_7d": 500,
+      "longitude": 459,
+      "police_station_rolling_30d": 441,
+      "latitude": 405,
+      "corridor_rolling_30d": 405,
+      "corridor_rolling_7d": 396,
+      "event_cause": 323,
+      "police_station": 313,
+      "hour_of_day": 280,
+      "h3_cell": 246,
+      "day_of_week": 211,
+      "veh_type": 90,
+      "month": 82,
+      "corridor": 81,
+      "zone": 59,
+      "junction": 52,
+      "junction_known": 20,
+      "event_type": 16,
+      "is_weekend": 16,
+      "zone_known": 2,
+      "is_public_holiday": 0
+    }
+  }
+}

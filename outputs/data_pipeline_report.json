@@ -1,0 +1,88 @@
+{
+  "pipeline_run_timestamp": "2026-06-21T02:00:10.667915",
+  "validation": {
+    "row_count": {
+      "spec": 8173,
+      "actual": 8173,
+      "match": true
+    },
+    "columns": {
+      "expected_count": 46,
+      "actual_count": 46,
+      "missing_from_file": [],
+      "extra_in_file": []
+    },
+    "event_type_distribution": {
+      "spec": {
+        "unplanned": 7706,
+        "planned": 467
+      },
+      "actual": {
+        "unplanned": 7706,
+        "planned": 467
+      }
+    },
+    "status_distribution": {
+      "spec": {
+        "closed": 7095,
+        "active": 1007,
+        "resolved": 71
+      },
+      "actual": {
+        "closed": 7095,
+        "active": 1007,
+        "resolved": 71
+      }
+    },
+    "missing_percentages": {
+      "event_type": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "latitude": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "longitude": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "event_cause": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "requires_road_closure": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "start_datetime": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "status": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "police_station": {
+        "spec_pct": 0,
+        "actual_pct": 0.0
+      },
+      "corridor": {
+        "spec_pct": 0.24,
+        "actual_pct": 0.24
+      },
+      "priority": {
+        "spec_pct": 0.02,
+        "actual_pct": 0.02
+      }
+    }
+  },
+  "output_stats": {
+    "total_rows": 8173,
+    "clearance_eligible_rows": 3205,
+    "priority_non_null_rows": 8171,
+    "features_classification_count": 23,
+    "features_regression_count": 22,
+    "active_rows_excluded_from_clearance": 1007
+  }
+}

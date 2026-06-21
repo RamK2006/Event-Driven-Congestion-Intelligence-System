@@ -1,0 +1,1336 @@
+{
+  "method": "Co-occurrence-based heuristic (NOT a routing algorithm)",
+  "disclosure": "This module provides Heuristic Diversion Suggestions based on historical event co-occurrence patterns. It is NOT a routing algorithm, shortest-path calculation, or anything implying real road-network analysis. No road-network graph data exists in this dataset.",
+  "concurrency_window_hours": 4,
+  "max_diversions_per_corridor": 3,
+  "corridors": {
+    "Non-corridor": {
+      "corridor": "Non-corridor",
+      "total_events": 3144,
+      "suggested_diversions": [
+        {
+          "corridor": "ORR North 2",
+          "concurrent_events": 436,
+          "total_events": 235,
+          "co_occurrence_ratio": 1.8553,
+          "shared_zones": [
+            "North Zone 1",
+            "North Zone 2",
+            "West Zone 1",
+            "South Zone 1"
+          ],
+          "shared_stations": [
+            "Kodigehalli",
+            "Yeshwanthpura",
+            "Jalahalli"
+          ]
+        },
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_events": 891,
+          "total_events": 458,
+          "co_occurrence_ratio": 1.9454,
+          "shared_zones": [
+            "West Zone 2",
+            "West Zone 1",
+            "North Zone 2"
+          ],
+          "shared_stations": [
+            "R.T. Nagar",
+            "Malleshwaram",
+            "Peenya",
+            "Jnanabharathi",
+            "Sadashivanagar",
+            "Yeshwanthpura",
+            "Sheshadripuram",
+            "Chikkabanavara"
+          ]
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_events": 558,
+          "total_events": 263,
+          "co_occurrence_ratio": 2.1217,
+          "shared_zones": [
+            "Central Zone 2",
+            "Central Zone 1"
+          ],
+          "shared_stations": [
+            "Jeevanbheemanagar",
+            "Halasur",
+            "Shivajinagar",
+            "Cubbon Park",
+            "Banaswadi",
+            "Ashok Nagar"
+          ]
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 3259
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 1716
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_count": 1666
+        },
+        {
+          "corridor": "Hosur Road",
+          "concurrent_count": 1542
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_count": 1310
+        }
+      ]
+    },
+    "CBD 2": {
+      "corridor": "CBD 2",
+      "total_events": 104,
+      "suggested_diversions": [
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_events": 0,
+          "total_events": 458,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR West 1",
+          "concurrent_events": 0,
+          "total_events": 168,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 0,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 1074
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 525
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_count": 248
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 177
+        },
+        {
+          "corridor": "Magadi Road",
+          "concurrent_count": 72
+        }
+      ]
+    },
+    "IRR(Thanisandra road)": {
+      "corridor": "IRR(Thanisandra road)",
+      "total_events": 95,
+      "suggested_diversions": [
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 1,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0036,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR West 1",
+          "concurrent_events": 3,
+          "total_events": 168,
+          "co_occurrence_ratio": 0.0179,
+          "shared_zones": [
+            "South Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_events": 45,
+          "total_events": 743,
+          "co_occurrence_ratio": 0.0606,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": [
+            "Ashok Nagar"
+          ]
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Hosur Road",
+          "concurrent_count": 821
+        },
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 434
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_count": 185
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_count": 120
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 45
+        }
+      ]
+    },
+    "Tumkur Road": {
+      "corridor": "Tumkur Road",
+      "total_events": 458,
+      "suggested_diversions": [
+        {
+          "corridor": "CBD 2",
+          "concurrent_events": 0,
+          "total_events": 104,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 1,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0036,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Hennur Main Road",
+          "concurrent_events": 1,
+          "total_events": 96,
+          "co_occurrence_ratio": 0.0104,
+          "shared_zones": [
+            "North Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 891
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 231
+        },
+        {
+          "corridor": "Magadi Road",
+          "concurrent_count": 182
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 138
+        },
+        {
+          "corridor": "West of Chord Road",
+          "concurrent_count": 92
+        }
+      ]
+    },
+    "Mysore Road": {
+      "corridor": "Mysore Road",
+      "total_events": 743,
+      "suggested_diversions": [
+        {
+          "corridor": "Hennur Main Road",
+          "concurrent_events": 0,
+          "total_events": 96,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "North Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_events": 1,
+          "total_events": 379,
+          "co_occurrence_ratio": 0.0026,
+          "shared_zones": [
+            "West Zone 2",
+            "North Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_events": 2,
+          "total_events": 209,
+          "co_occurrence_ratio": 0.0096,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 3259
+        },
+        {
+          "corridor": "CBD 2",
+          "concurrent_count": 525
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 309
+        },
+        {
+          "corridor": "Magadi Road",
+          "concurrent_count": 300
+        },
+        {
+          "corridor": "Hosur Road",
+          "concurrent_count": 213
+        }
+      ]
+    },
+    "Bellary Road 1": {
+      "corridor": "Bellary Road 1",
+      "total_events": 610,
+      "suggested_diversions": [
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_events": 0,
+          "total_events": 209,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_events": 8,
+          "total_events": 263,
+          "co_occurrence_ratio": 0.0304,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": [
+            "Cubbon Park"
+          ]
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_events": 309,
+          "total_events": 743,
+          "co_occurrence_ratio": 0.4159,
+          "shared_zones": [
+            "West Zone 2",
+            "Central Zone 2",
+            "North Zone 2"
+          ],
+          "shared_stations": [
+            "High ground",
+            "Cubbon Park"
+          ]
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 1716
+        },
+        {
+          "corridor": "ORR North 2",
+          "concurrent_count": 357
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_count": 350
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 309
+        },
+        {
+          "corridor": "West of Chord Road",
+          "concurrent_count": 234
+        }
+      ]
+    },
+    "ORR West 1": {
+      "corridor": "ORR West 1",
+      "total_events": 168,
+      "suggested_diversions": [
+        {
+          "corridor": "CBD 2",
+          "concurrent_events": 0,
+          "total_events": 104,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 0,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_events": 0,
+          "total_events": 379,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 529
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 150
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_count": 112
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 97
+        },
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_count": 67
+        }
+      ]
+    },
+    "Old Airport Road": {
+      "corridor": "Old Airport Road",
+      "total_events": 76,
+      "suggested_diversions": [
+        {
+          "corridor": "Mysore Road",
+          "concurrent_events": 7,
+          "total_events": 743,
+          "co_occurrence_ratio": 0.0094,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Hosur Road",
+          "concurrent_events": 10,
+          "total_events": 298,
+          "co_occurrence_ratio": 0.0336,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Airport New South Road",
+          "concurrent_events": 4,
+          "total_events": 67,
+          "co_occurrence_ratio": 0.0597,
+          "shared_zones": [
+            "East Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 225
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_count": 132
+        },
+        {
+          "corridor": "ORR East 2",
+          "concurrent_count": 126
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_count": 50
+        },
+        {
+          "corridor": "Varthur Road",
+          "concurrent_count": 38
+        }
+      ]
+    },
+    "ORR North 1": {
+      "corridor": "ORR North 1",
+      "total_events": 275,
+      "suggested_diversions": [
+        {
+          "corridor": "CBD 2",
+          "concurrent_events": 0,
+          "total_events": 104,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR West 1",
+          "concurrent_events": 0,
+          "total_events": 168,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_events": 0,
+          "total_events": 244,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 1310
+        },
+        {
+          "corridor": "Airport New South Road",
+          "concurrent_count": 241
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 209
+        },
+        {
+          "corridor": "Hennur Main Road",
+          "concurrent_count": 191
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_count": 117
+        }
+      ]
+    },
+    "Bellary Road 2": {
+      "corridor": "Bellary Road 2",
+      "total_events": 379,
+      "suggested_diversions": [
+        {
+          "corridor": "CBD 2",
+          "concurrent_events": 0,
+          "total_events": 104,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR West 1",
+          "concurrent_events": 0,
+          "total_events": 168,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Magadi Road",
+          "concurrent_events": 0,
+          "total_events": 245,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 905
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 350
+        },
+        {
+          "corridor": "ORR North 2",
+          "concurrent_count": 236
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_count": 117
+        },
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_count": 72
+        }
+      ]
+    },
+    "Hennur Main Road": {
+      "corridor": "Hennur Main Road",
+      "total_events": 96,
+      "suggested_diversions": [
+        {
+          "corridor": "Mysore Road",
+          "concurrent_events": 0,
+          "total_events": 743,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "North Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_events": 1,
+          "total_events": 458,
+          "co_occurrence_ratio": 0.0022,
+          "shared_zones": [
+            "North Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_events": 41,
+          "total_events": 379,
+          "co_occurrence_ratio": 0.1082,
+          "shared_zones": [
+            "North Zone 1",
+            "North Zone 2"
+          ],
+          "shared_stations": [
+            "Yelahanka",
+            "Chikkajala"
+          ]
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 478
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_count": 191
+        },
+        {
+          "corridor": "Airport New South Road",
+          "concurrent_count": 121
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 67
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_count": 41
+        }
+      ]
+    },
+    "Bannerghata Road": {
+      "corridor": "Bannerghata Road",
+      "total_events": 209,
+      "suggested_diversions": [
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_events": 0,
+          "total_events": 610,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_events": 0,
+          "total_events": 263,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_events": 2,
+          "total_events": 743,
+          "co_occurrence_ratio": 0.0027,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 1666
+        },
+        {
+          "corridor": "Hosur Road",
+          "concurrent_count": 636
+        },
+        {
+          "corridor": "IRR(Thanisandra road)",
+          "concurrent_count": 185
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_count": 149
+        },
+        {
+          "corridor": "ORR West 1",
+          "concurrent_count": 112
+        }
+      ]
+    },
+    "Hosur Road": {
+      "corridor": "Hosur Road",
+      "total_events": 298,
+      "suggested_diversions": [
+        {
+          "corridor": "ORR North 2",
+          "concurrent_events": 0,
+          "total_events": 235,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "South Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 23,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0836,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Old Airport Road",
+          "concurrent_events": 10,
+          "total_events": 76,
+          "co_occurrence_ratio": 0.1316,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 1542
+        },
+        {
+          "corridor": "IRR(Thanisandra road)",
+          "concurrent_count": 821
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_count": 636
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_count": 508
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_count": 233
+        }
+      ]
+    },
+    "ORR North 2": {
+      "corridor": "ORR North 2",
+      "total_events": 235,
+      "suggested_diversions": [
+        {
+          "corridor": "ORR West 1",
+          "concurrent_events": 0,
+          "total_events": 168,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "South Zone 1",
+            "West Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Hosur Road",
+          "concurrent_events": 0,
+          "total_events": 298,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "South Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_events": 1,
+          "total_events": 209,
+          "co_occurrence_ratio": 0.0048,
+          "shared_zones": [
+            "South Zone 1"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 436
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 357
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_count": 236
+        },
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_count": 65
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_count": 41
+        }
+      ]
+    },
+    "Old Madras Road": {
+      "corridor": "Old Madras Road",
+      "total_events": 263,
+      "suggested_diversions": [
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_events": 0,
+          "total_events": 209,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Airport New South Road",
+          "concurrent_events": 0,
+          "total_events": 67,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [],
+          "shared_stations": [
+            "Banaswadi"
+          ]
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_events": 8,
+          "total_events": 610,
+          "co_occurrence_ratio": 0.0131,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": [
+            "Cubbon Park"
+          ]
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 558
+        },
+        {
+          "corridor": "CBD 2",
+          "concurrent_count": 248
+        },
+        {
+          "corridor": "Hosur Road",
+          "concurrent_count": 233
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 193
+        },
+        {
+          "corridor": "Old Airport Road",
+          "concurrent_count": 50
+        }
+      ]
+    },
+    "Magadi Road": {
+      "corridor": "Magadi Road",
+      "total_events": 245,
+      "suggested_diversions": [
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_events": 0,
+          "total_events": 379,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 1,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0036,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_events": 7,
+          "total_events": 209,
+          "co_occurrence_ratio": 0.0335,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 1019
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 300
+        },
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_count": 182
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 166
+        },
+        {
+          "corridor": "CBD 2",
+          "concurrent_count": 72
+        }
+      ]
+    },
+    "Varthur Road": {
+      "corridor": "Varthur Road",
+      "total_events": 77,
+      "suggested_diversions": [
+        {
+          "corridor": "ORR East 2",
+          "concurrent_events": 64,
+          "total_events": 187,
+          "co_occurrence_ratio": 0.3422,
+          "shared_zones": [
+            "East Zone 1"
+          ],
+          "shared_stations": [
+            "HAL Old Airport"
+          ]
+        },
+        {
+          "corridor": "Old Airport Road",
+          "concurrent_events": 38,
+          "total_events": 76,
+          "co_occurrence_ratio": 0.5,
+          "shared_zones": [
+            "East Zone 1"
+          ],
+          "shared_stations": [
+            "HAL Old Airport"
+          ]
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_events": 166,
+          "total_events": 244,
+          "co_occurrence_ratio": 0.6803,
+          "shared_zones": [
+            "East Zone 1"
+          ],
+          "shared_stations": [
+            "HAL Old Airport"
+          ]
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 305
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_count": 166
+        },
+        {
+          "corridor": "ORR East 2",
+          "concurrent_count": 64
+        },
+        {
+          "corridor": "Old Airport Road",
+          "concurrent_count": 38
+        }
+      ]
+    },
+    "ORR East 1": {
+      "corridor": "ORR East 1",
+      "total_events": 244,
+      "suggested_diversions": [
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 0,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_events": 8,
+          "total_events": 743,
+          "co_occurrence_ratio": 0.0108,
+          "shared_zones": [
+            "Central Zone 1"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR West 1",
+          "concurrent_events": 6,
+          "total_events": 168,
+          "co_occurrence_ratio": 0.0357,
+          "shared_zones": [
+            "South Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 912
+        },
+        {
+          "corridor": "Hosur Road",
+          "concurrent_count": 508
+        },
+        {
+          "corridor": "ORR East 2",
+          "concurrent_count": 237
+        },
+        {
+          "corridor": "Varthur Road",
+          "concurrent_count": 166
+        },
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_count": 149
+        }
+      ]
+    },
+    "West of Chord Road": {
+      "corridor": "West of Chord Road",
+      "total_events": 174,
+      "suggested_diversions": [
+        {
+          "corridor": "CBD 2",
+          "concurrent_events": 0,
+          "total_events": 104,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 0,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_events": 0,
+          "total_events": 379,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "West Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 422
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 234
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 112
+        },
+        {
+          "corridor": "Tumkur Road",
+          "concurrent_count": 92
+        },
+        {
+          "corridor": "Magadi Road",
+          "concurrent_count": 71
+        }
+      ]
+    },
+    "Airport New South Road": {
+      "corridor": "Airport New South Road",
+      "total_events": 67,
+      "suggested_diversions": [
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_events": 0,
+          "total_events": 263,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [],
+          "shared_stations": [
+            "Banaswadi"
+          ]
+        },
+        {
+          "corridor": "ORR East 2",
+          "concurrent_events": 0,
+          "total_events": 187,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "East Zone 2"
+          ],
+          "shared_stations": [
+            "Banaswadi"
+          ]
+        },
+        {
+          "corridor": "Old Airport Road",
+          "concurrent_events": 4,
+          "total_events": 76,
+          "co_occurrence_ratio": 0.0526,
+          "shared_zones": [
+            "East Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 601
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_count": 241
+        },
+        {
+          "corridor": "Hennur Main Road",
+          "concurrent_count": 121
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 70
+        },
+        {
+          "corridor": "Bellary Road 2",
+          "concurrent_count": 64
+        }
+      ]
+    },
+    "ORR East 2": {
+      "corridor": "ORR East 2",
+      "total_events": 187,
+      "suggested_diversions": [
+        {
+          "corridor": "Airport New South Road",
+          "concurrent_events": 0,
+          "total_events": 67,
+          "co_occurrence_ratio": 0.0,
+          "shared_zones": [
+            "East Zone 2"
+          ],
+          "shared_stations": [
+            "Banaswadi"
+          ]
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_events": 4,
+          "total_events": 263,
+          "co_occurrence_ratio": 0.0152,
+          "shared_zones": [],
+          "shared_stations": [
+            "Banaswadi"
+          ]
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_events": 24,
+          "total_events": 275,
+          "co_occurrence_ratio": 0.0873,
+          "shared_zones": [
+            "East Zone 2"
+          ],
+          "shared_stations": [
+            "Mahadevapura",
+            "Banaswadi"
+          ]
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 768
+        },
+        {
+          "corridor": "ORR East 1",
+          "concurrent_count": 237
+        },
+        {
+          "corridor": "Old Airport Road",
+          "concurrent_count": 126
+        },
+        {
+          "corridor": "Varthur Road",
+          "concurrent_count": 64
+        },
+        {
+          "corridor": "ORR North 1",
+          "concurrent_count": 24
+        }
+      ]
+    },
+    "CBD 1": {
+      "corridor": "CBD 1",
+      "total_events": 26,
+      "suggested_diversions": [
+        {
+          "corridor": "Bannerghata Road",
+          "concurrent_events": 3,
+          "total_events": 209,
+          "co_occurrence_ratio": 0.0144,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_events": 25,
+          "total_events": 610,
+          "co_occurrence_ratio": 0.041,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        },
+        {
+          "corridor": "Magadi Road",
+          "concurrent_events": 14,
+          "total_events": 245,
+          "co_occurrence_ratio": 0.0571,
+          "shared_zones": [
+            "Central Zone 2"
+          ],
+          "shared_stations": []
+        }
+      ],
+      "concurrent_corridors_avoided": [
+        {
+          "corridor": "Non-corridor",
+          "concurrent_count": 235
+        },
+        {
+          "corridor": "Mysore Road",
+          "concurrent_count": 128
+        },
+        {
+          "corridor": "CBD 2",
+          "concurrent_count": 41
+        },
+        {
+          "corridor": "Bellary Road 1",
+          "concurrent_count": 25
+        },
+        {
+          "corridor": "Old Madras Road",
+          "concurrent_count": 21
+        }
+      ]
+    }
+  }
+}
