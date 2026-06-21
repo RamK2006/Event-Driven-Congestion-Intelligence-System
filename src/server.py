@@ -14,7 +14,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import joblib
-from datetime import datetime
+from datetime import datetime, timezone
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
@@ -328,7 +328,7 @@ def predict():
             return jsonify({"error": "Latitude or longitude is outside the valid range"}), 400
         event_cause = data.get("event_cause", "vehicle_breakdown")
         veh_type = data.get("veh_type", "Unknown_VehType")
-        datetime_str = data.get("datetime_str", datetime.utcnow().isoformat())
+        datetime_str = data.get("datetime_str") or datetime.now(timezone.utc).isoformat()
         event_type = data.get("event_type", "unplanned")
 
         # Parse datetime
