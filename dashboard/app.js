@@ -743,14 +743,14 @@ async function loadCauseBreakdown() {
 
 
 // ============================================================================
-/* Removed from the product UI: legacy methodology metrics
+/* Removed from the product UI: legacy evaluation metrics
 // ============================================================================
-async function loadMethodologyMetrics() {
+async function loadLegacyEvaluationMetrics() {
     try {
         const res = await fetch(`${API_BASE}/api/evaluation`);
         const data = await res.json();
 
-        const container = document.getElementById('methodologyMetrics');
+        const container = document.getElementById('legacyEvaluationMetrics');
         let html = '';
 
         // Model A metrics
@@ -825,8 +825,8 @@ async function loadMethodologyMetrics() {
         container.innerHTML = html || '<div style="color: var(--text-tertiary);">Evaluation metrics not yet available. Run model training first.</div>';
 
     } catch (err) {
-        console.error('Error loading methodology metrics:', err);
-        document.getElementById('methodologyMetrics').innerHTML =
+        console.error('Error loading legacy evaluation metrics:', err);
+        document.getElementById('legacyEvaluationMetrics').innerHTML =
             '<div style="color: var(--text-tertiary);">Could not load evaluation metrics from server.</div>';
     }
 }

@@ -76,7 +76,7 @@ Event counts over time with monthly, hourly, and day-of-week views. Filterable b
 │       Event Command Center Dashboard (Frontend)      │
 │  Leaflet Map │ Prediction Form │ Workload │ Trends  │
 │              │                 │ Panel    │ Panel   │
-│              Methodology & Limitations Panel         │
+│        Professional four-panel operations UI         │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -177,8 +177,12 @@ source .venv/bin/activate
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run the full pipeline (100 Optuna trials per model by default)
-python run.py
+# 4. Run the full offline pipeline (features + models + hotspots + diversions)
+# Cheap smoke run:
+python run.py --trials 10
+
+# Final training run:
+python run.py --trials 100
 
 # Or retrain only the models with an explicit tuning budget
 python src/train_models.py --trials 100

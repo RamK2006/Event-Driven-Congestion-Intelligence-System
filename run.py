@@ -7,9 +7,11 @@ Runs the complete pipeline in order:
   3. Hotspot clustering (HDBSCAN)
   4. Diversion heuristic (co-occurrence lookup table)
 
-Then starts the Flask server to serve the dashboard.
+Server startup is intentionally separate:
+  python src/server.py
 """
 
+import argparse
 import sys
 import os
 import io
@@ -24,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, "src"))
 
 
-def main():
+def main(trials=100):
     print("=" * 70)
     print("  EVENT IMPACT & RESPONSE INTELLIGENCE PLATFORM")
     print("  Full Pipeline Execution")
@@ -41,10 +43,10 @@ def main():
     # Step 2: Model Training
     print("\n")
     print("=" * 70)
-    print("PHASE 2: MODEL TRAINING")
+    print(f"PHASE 2: MODEL TRAINING ({trials} Optuna trials per model)")
     print("=" * 70)
     from train_models import run_training
-    results = run_training()
+    results = run_training(trials=trials)
 
     # Step 3: Hotspot Clustering
     print("\n")
@@ -80,4 +82,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Run the full offline pipeline: features, models, clustering, and diversions."
+    )
+    parser.add_argument(
+        "--trials",
+        type=int,
+        default=int(os.environ.get("OPTUNA_TRIALS", "100")),
+        help="Optuna trials per model. Use 10-25 for a smoke run, 100+ for final training.",
+    )
+    args = parser.parse_args()
+    main(trials=max(args.trials, 1))
