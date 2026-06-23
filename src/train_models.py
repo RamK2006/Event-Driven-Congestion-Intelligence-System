@@ -63,7 +63,10 @@ def prepare_features(df, feature_cols, target_col, is_regression=False):
     subset = df.loc[mask].copy()
     features = [name for name in feature_cols if name in subset and name != "status"]
     X = subset[features].copy()
-    categorical = X.select_dtypes(include=["object", "str", "category", "bool"]).columns.tolist()
+    # Convert bool columns to int first (avoids dtype issues with select_dtypes)
+    for col in X.select_dtypes(include=["bool"]).columns:
+        X[col] = X[col].astype(int)
+    categorical = X.select_dtypes(include=["object", "category"]).columns.tolist()
     for column in categorical:
         X[column] = X[column].fillna("__MISSING__").astype(str)
     numeric = [column for column in features if column not in categorical]
