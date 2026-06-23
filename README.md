@@ -88,12 +88,14 @@ Event counts over time with monthly, hourly, and day-of-week views. Filterable b
 |-------|--------|-----------|------------|
 | **A** | Priority (High/Low) | LightGBM Classifier | Precision, Recall, F1, ROC-AUC |
 | **B** | Road Closure (Yes/No) | LightGBM Classifier | Precision, Recall, F1, ROC-AUC |
-| **C** | Clearance Time (minutes) | LightGBM Regressor | MAE, RMSE |
+| **C** | Clearance Time (minutes) | LightGBM Regressor | MAE, RMSE, Median AE |
 
-- **Tuning**: RandomizedSearchCV, max 20 parameter combinations per model
+- **Tuning**: Optuna hyperparameter search with configurable trial budget (`--trials`)
+- **Feature engineering**: temporal/cyclical features, location density, H3 cells, historical frequency signals, keyword flags, interaction features, and leakage-safe target encoding
 - **Split**: 80/20, stratified for classifiers
-- **Class weighting**: `is_unbalance=True` (no SMOTE)
-- **Full metrics**: See `outputs/model_evaluation_report.json` and `outputs/model_diagnostics/`
+- **Class balancing**: LightGBM class weighting / positive-class scaling where applicable
+- **Artifacts**: fitted model bundles in `models/`, feature contracts in `data/feature_config.json`, and diagnostics in `outputs/model_diagnostics/`
+- **Full metrics**: See `outputs/model_evaluation_report.json`
 
 ---
 
