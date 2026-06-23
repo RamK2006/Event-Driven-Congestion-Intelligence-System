@@ -1,0 +1,15 @@
+.venv/
+models/
+data/
+outputs/
+src/
+tests/
+.agents/
+__pycache__/
+requirements.txt
+run.py
+run_remaining.py
+wsgi.py
+Procfile
+runtime.txt
+*.py
