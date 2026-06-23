@@ -4,18 +4,18 @@
     "min_cluster_size": 30,
     "min_samples": 10
   },
-  "total_clusters": 70,
-  "total_noise_points": 2775,
+  "total_clusters": 69,
+  "total_noise_points": 2804,
   "hotspots": [
     {
-      "cluster_id": 16,
-      "center_latitude": 12.902447,
-      "center_longitude": 77.598918,
-      "event_count": 191,
+      "cluster_id": 15,
+      "center_latitude": 12.902241,
+      "center_longitude": 77.598876,
+      "event_count": 192,
       "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 45.5,
+      "dominant_cause_pct": 45.8,
       "dominant_priority": "High",
-      "dominant_priority_pct": 91.6,
+      "dominant_priority_pct": 91.7,
       "associated_police_station": "Mico Layout",
       "associated_zone": "South Zone 2",
       "associated_corridor": "Bannerghata Road",
@@ -50,7 +50,7 @@
       "rank": 3
     },
     {
-      "cluster_id": 56,
+      "cluster_id": 55,
       "center_latitude": 12.965798,
       "center_longitude": 77.585785,
       "event_count": 172,
@@ -92,7 +92,7 @@
       "rank": 6
     },
     {
-      "cluster_id": 54,
+      "cluster_id": 53,
       "center_latitude": 12.997351,
       "center_longitude": 77.584415,
       "event_count": 147,
@@ -120,7 +120,7 @@
       "rank": 8
     },
     {
-      "cluster_id": 66,
+      "cluster_id": 65,
       "center_latitude": 12.953556,
       "center_longitude": 77.542311,
       "event_count": 139,
@@ -190,7 +190,7 @@
       "rank": 13
     },
     {
-      "cluster_id": 51,
+      "cluster_id": 50,
       "center_latitude": 12.970787,
       "center_longitude": 77.608232,
       "event_count": 109,
@@ -204,7 +204,7 @@
       "rank": 14
     },
     {
-      "cluster_id": 65,
+      "cluster_id": 64,
       "center_latitude": 12.958842,
       "center_longitude": 77.5549,
       "event_count": 109,
@@ -246,7 +246,7 @@
       "rank": 17
     },
     {
-      "cluster_id": 52,
+      "cluster_id": 51,
       "center_latitude": 12.939615,
       "center_longitude": 77.521385,
       "event_count": 102,
@@ -260,6 +260,20 @@
       "rank": 18
     },
     {
+      "cluster_id": 2,
+      "center_latitude": 13.050889,
+      "center_longitude": 77.642456,
+      "event_count": 97,
+      "dominant_event_cause": "construction",
+      "dominant_cause_pct": 47.4,
+      "dominant_priority": "Low",
+      "dominant_priority_pct": 55.7,
+      "associated_police_station": "Hennuru",
+      "associated_zone": "East Zone 2",
+      "associated_corridor": "Airport New South Road",
+      "rank": 19
+    },
+    {
       "cluster_id": 13,
       "center_latitude": 12.934095,
       "center_longitude": 77.689131,
@@ -271,20 +285,6 @@
       "associated_police_station": "HAL Old Airport",
       "associated_zone": "East Zone 1",
       "associated_corridor": "ORR East 1",
-      "rank": 19
-    },
-    {
-      "cluster_id": 2,
-      "center_latitude": 13.050879,
-      "center_longitude": 77.642575,
-      "event_count": 96,
-      "dominant_event_cause": "construction",
-      "dominant_cause_pct": 47.9,
-      "dominant_priority": "Low",
-      "dominant_priority_pct": 56.2,
-      "associated_police_station": "Hennuru",
-      "associated_zone": "East Zone 2",
-      "associated_corridor": "Airport New South Road",
       "rank": 20
     },
     {
@@ -302,7 +302,7 @@
       "rank": 21
     },
     {
-      "cluster_id": 59,
+      "cluster_id": 58,
       "center_latitude": 12.980964,
       "center_longitude": 77.570086,
       "event_count": 94,
@@ -316,7 +316,7 @@
       "rank": 22
     },
     {
-      "cluster_id": 63,
+      "cluster_id": 62,
       "center_latitude": 12.977698,
       "center_longitude": 77.586462,
       "event_count": 94,
@@ -330,40 +330,40 @@
       "rank": 23
     },
     {
-      "cluster_id": 39,
-      "center_latitude": 12.922565,
-      "center_longitude": 77.619488,
+      "cluster_id": 63,
+      "center_latitude": 13.035981,
+      "center_longitude": 77.589011,
       "event_count": 88,
       "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 44.3,
-      "dominant_priority": "High",
-      "dominant_priority_pct": 100.0,
-      "associated_police_station": "Madiwala",
-      "associated_zone": "South Zone 2",
-      "associated_corridor": "Hosur Road",
-      "rank": 24
-    },
-    {
-      "cluster_id": 64,
-      "center_latitude": 13.036052,
-      "center_longitude": 77.589036,
-      "event_count": 87,
-      "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 67.8,
+      "dominant_cause_pct": 67.0,
       "dominant_priority": "High",
       "dominant_priority_pct": 100.0,
       "associated_police_station": "Hebbala",
       "associated_zone": "North Zone 2",
       "associated_corridor": "Bellary Road 1",
-      "rank": 25
+      "rank": 24
     },
     {
       "cluster_id": 40,
-      "center_latitude": 12.911487,
-      "center_longitude": 77.626226,
-      "event_count": 83,
+      "center_latitude": 12.922627,
+      "center_longitude": 77.619452,
+      "event_count": 87,
       "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 68.7,
+      "dominant_cause_pct": 44.8,
+      "dominant_priority": "High",
+      "dominant_priority_pct": 100.0,
+      "associated_police_station": "Madiwala",
+      "associated_zone": "South Zone 2",
+      "associated_corridor": "Hosur Road",
+      "rank": 25
+    },
+    {
+      "cluster_id": 39,
+      "center_latitude": 12.911555,
+      "center_longitude": 77.626183,
+      "event_count": 84,
+      "dominant_event_cause": "vehicle_breakdown",
+      "dominant_cause_pct": 67.9,
       "dominant_priority": "High",
       "dominant_priority_pct": 100.0,
       "associated_police_station": "HSR Layout",
@@ -372,7 +372,7 @@
       "rank": 26
     },
     {
-      "cluster_id": 57,
+      "cluster_id": 56,
       "center_latitude": 12.983158,
       "center_longitude": 77.595791,
       "event_count": 82,
@@ -429,13 +429,13 @@
     },
     {
       "cluster_id": 23,
-      "center_latitude": 12.998015,
-      "center_longitude": 77.61339,
-      "event_count": 71,
+      "center_latitude": 12.997938,
+      "center_longitude": 77.61322,
+      "event_count": 72,
       "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 39.4,
+      "dominant_cause_pct": 40.3,
       "dominant_priority": "Low",
-      "dominant_priority_pct": 85.9,
+      "dominant_priority_pct": 86.1,
       "associated_police_station": "Pulikeshinagar(F.Town)",
       "associated_zone": "North Zone 1",
       "associated_corridor": "Airport New South Road",
@@ -484,7 +484,7 @@
       "rank": 34
     },
     {
-      "cluster_id": 60,
+      "cluster_id": 59,
       "center_latitude": 12.986442,
       "center_longitude": 77.573784,
       "event_count": 65,
@@ -498,7 +498,7 @@
       "rank": 35
     },
     {
-      "cluster_id": 53,
+      "cluster_id": 52,
       "center_latitude": 12.978115,
       "center_longitude": 77.601183,
       "event_count": 64,
@@ -526,20 +526,6 @@
       "rank": 37
     },
     {
-      "cluster_id": 42,
-      "center_latitude": 12.962612,
-      "center_longitude": 77.633504,
-      "event_count": 61,
-      "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 57.4,
-      "dominant_priority": "Low",
-      "dominant_priority_pct": 63.9,
-      "associated_police_station": "Halasur",
-      "associated_zone": "Central Zone 1",
-      "associated_corridor": "Old Airport Road",
-      "rank": 38
-    },
-    {
       "cluster_id": 32,
       "center_latitude": 12.997898,
       "center_longitude": 77.666074,
@@ -551,10 +537,24 @@
       "associated_police_station": "Banaswadi",
       "associated_zone": "East Zone 2",
       "associated_corridor": "ORR North 1",
+      "rank": 38
+    },
+    {
+      "cluster_id": 42,
+      "center_latitude": 12.962542,
+      "center_longitude": 77.63372,
+      "event_count": 60,
+      "dominant_event_cause": "vehicle_breakdown",
+      "dominant_cause_pct": 56.7,
+      "dominant_priority": "Low",
+      "dominant_priority_pct": 63.3,
+      "associated_police_station": "Halasur",
+      "associated_zone": "Central Zone 1",
+      "associated_corridor": "Old Airport Road",
       "rank": 39
     },
     {
-      "cluster_id": 69,
+      "cluster_id": 68,
       "center_latitude": 13.015012,
       "center_longitude": 77.583866,
       "event_count": 59,
@@ -583,11 +583,11 @@
     },
     {
       "cluster_id": 17,
-      "center_latitude": 12.879671,
-      "center_longitude": 77.646292,
-      "event_count": 54,
+      "center_latitude": 12.879948,
+      "center_longitude": 77.646107,
+      "event_count": 55,
       "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 68.5,
+      "dominant_cause_pct": 67.3,
       "dominant_priority": "High",
       "dominant_priority_pct": 100.0,
       "associated_police_station": "Electronic City",
@@ -610,6 +610,20 @@
       "rank": 43
     },
     {
+      "cluster_id": 49,
+      "center_latitude": 12.944464,
+      "center_longitude": 77.596636,
+      "event_count": 51,
+      "dominant_event_cause": "vehicle_breakdown",
+      "dominant_cause_pct": 76.5,
+      "dominant_priority": "Low",
+      "dominant_priority_pct": 100.0,
+      "associated_police_station": "Wilson Garden",
+      "associated_zone": "Central Zone 2",
+      "associated_corridor": "Non-corridor",
+      "rank": 44
+    },
+    {
       "cluster_id": 33,
       "center_latitude": 13.002232,
       "center_longitude": 77.680132,
@@ -621,7 +635,7 @@
       "associated_police_station": "K.R. Pura",
       "associated_zone": "East Zone 2",
       "associated_corridor": "ORR East 2",
-      "rank": 44
+      "rank": 45
     },
     {
       "cluster_id": 41,
@@ -635,7 +649,7 @@
       "associated_police_station": "Magadi Road",
       "associated_zone": "West Zone 2",
       "associated_corridor": "West of Chord Road",
-      "rank": 45
+      "rank": 46
     },
     {
       "cluster_id": 46,
@@ -649,24 +663,10 @@
       "associated_police_station": "Hennuru",
       "associated_zone": "North Zone 1",
       "associated_corridor": "ORR North 1",
-      "rank": 46
-    },
-    {
-      "cluster_id": 50,
-      "center_latitude": 12.944367,
-      "center_longitude": 77.596707,
-      "event_count": 50,
-      "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 76.0,
-      "dominant_priority": "Low",
-      "dominant_priority_pct": 100.0,
-      "associated_police_station": "Wilson Garden",
-      "associated_zone": "Central Zone 2",
-      "associated_corridor": "Non-corridor",
       "rank": 47
     },
     {
-      "cluster_id": 55,
+      "cluster_id": 54,
       "center_latitude": 12.96395,
       "center_longitude": 77.595056,
       "event_count": 50,
@@ -680,7 +680,7 @@
       "rank": 48
     },
     {
-      "cluster_id": 49,
+      "cluster_id": 48,
       "center_latitude": 13.038181,
       "center_longitude": 77.626045,
       "event_count": 48,
@@ -694,20 +694,6 @@
       "rank": 49
     },
     {
-      "cluster_id": 35,
-      "center_latitude": 12.927457,
-      "center_longitude": 77.621089,
-      "event_count": 45,
-      "dominant_event_cause": "pot_holes",
-      "dominant_cause_pct": 57.8,
-      "dominant_priority": "High",
-      "dominant_priority_pct": 100.0,
-      "associated_police_station": "Adugodi",
-      "associated_zone": "South Zone 2",
-      "associated_corridor": "IRR(Thanisandra road)",
-      "rank": 50
-    },
-    {
       "cluster_id": 4,
       "center_latitude": 12.926511,
       "center_longitude": 77.548844,
@@ -719,21 +705,7 @@
       "associated_police_station": "Banashankari",
       "associated_zone": "West Zone 2",
       "associated_corridor": "ORR West 1",
-      "rank": 51
-    },
-    {
-      "cluster_id": 12,
-      "center_latitude": 12.921933,
-      "center_longitude": 77.663298,
-      "event_count": 43,
-      "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 69.8,
-      "dominant_priority": "High",
-      "dominant_priority_pct": 100.0,
-      "associated_police_station": "Bellandur",
-      "associated_zone": "East Zone 1",
-      "associated_corridor": "ORR East 1",
-      "rank": 52
+      "rank": 50
     },
     {
       "cluster_id": 14,
@@ -747,10 +719,38 @@
       "associated_police_station": "HAL Old Airport",
       "associated_zone": "East Zone 1",
       "associated_corridor": "Varthur Road",
+      "rank": 51
+    },
+    {
+      "cluster_id": 35,
+      "center_latitude": 12.927545,
+      "center_longitude": 77.621133,
+      "event_count": 43,
+      "dominant_event_cause": "pot_holes",
+      "dominant_cause_pct": 55.8,
+      "dominant_priority": "High",
+      "dominant_priority_pct": 100.0,
+      "associated_police_station": "Adugodi",
+      "associated_zone": "South Zone 2",
+      "associated_corridor": "IRR(Thanisandra road)",
+      "rank": 52
+    },
+    {
+      "cluster_id": 12,
+      "center_latitude": 12.921867,
+      "center_longitude": 77.663054,
+      "event_count": 42,
+      "dominant_event_cause": "vehicle_breakdown",
+      "dominant_cause_pct": 69.0,
+      "dominant_priority": "High",
+      "dominant_priority_pct": 100.0,
+      "associated_police_station": "Bellandur",
+      "associated_zone": "East Zone 1",
+      "associated_corridor": "ORR East 1",
       "rank": 53
     },
     {
-      "cluster_id": 61,
+      "cluster_id": 60,
       "center_latitude": 13.051266,
       "center_longitude": 77.59329,
       "event_count": 42,
@@ -778,7 +778,7 @@
       "rank": 55
     },
     {
-      "cluster_id": 48,
+      "cluster_id": 47,
       "center_latitude": 13.041261,
       "center_longitude": 77.622258,
       "event_count": 40,
@@ -792,17 +792,17 @@
       "rank": 56
     },
     {
-      "cluster_id": 67,
-      "center_latitude": 13.023726,
-      "center_longitude": 77.584957,
+      "cluster_id": 57,
+      "center_latitude": 12.964822,
+      "center_longitude": 77.568669,
       "event_count": 38,
       "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 76.3,
+      "dominant_cause_pct": 44.7,
       "dominant_priority": "High",
-      "dominant_priority_pct": 100.0,
-      "associated_police_station": "R.T. Nagar",
-      "associated_zone": "North Zone 2",
-      "associated_corridor": "Bellary Road 1",
+      "dominant_priority_pct": 81.6,
+      "associated_police_station": "Chamarajpet",
+      "associated_zone": "Central Zone 2",
+      "associated_corridor": "Mysore Road",
       "rank": 57
     },
     {
@@ -820,21 +820,21 @@
       "rank": 58
     },
     {
-      "cluster_id": 58,
-      "center_latitude": 12.96488,
-      "center_longitude": 77.568758,
+      "cluster_id": 66,
+      "center_latitude": 13.023778,
+      "center_longitude": 77.584969,
       "event_count": 37,
       "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 43.2,
+      "dominant_cause_pct": 75.7,
       "dominant_priority": "High",
-      "dominant_priority_pct": 81.1,
-      "associated_police_station": "Chamarajpet",
-      "associated_zone": "Central Zone 2",
-      "associated_corridor": "Mysore Road",
+      "dominant_priority_pct": 100.0,
+      "associated_police_station": "R.T. Nagar",
+      "associated_zone": "North Zone 2",
+      "associated_corridor": "Bellary Road 1",
       "rank": 59
     },
     {
-      "cluster_id": 68,
+      "cluster_id": 67,
       "center_latitude": 13.019424,
       "center_longitude": 77.584056,
       "event_count": 37,
@@ -862,21 +862,7 @@
       "rank": 61
     },
     {
-      "cluster_id": 29,
-      "center_latitude": 12.997773,
-      "center_longitude": 77.551437,
-      "event_count": 36,
-      "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 55.6,
-      "dominant_priority": "High",
-      "dominant_priority_pct": 97.2,
-      "associated_police_station": "Rajajinagar",
-      "associated_zone": "West Zone 1",
-      "associated_corridor": "West of Chord Road",
-      "rank": 62
-    },
-    {
-      "cluster_id": 62,
+      "cluster_id": 61,
       "center_latitude": 12.98599,
       "center_longitude": 77.588441,
       "event_count": 36,
@@ -887,20 +873,34 @@
       "associated_police_station": "High ground",
       "associated_zone": "Central Zone 2",
       "associated_corridor": "Bellary Road 1",
-      "rank": 63
+      "rank": 62
     },
     {
       "cluster_id": 5,
-      "center_latitude": 12.906261,
-      "center_longitude": 77.547034,
-      "event_count": 34,
-      "dominant_event_cause": "pot_holes",
-      "dominant_cause_pct": 29.4,
+      "center_latitude": 12.90647,
+      "center_longitude": 77.547377,
+      "event_count": 35,
+      "dominant_event_cause": "vehicle_breakdown",
+      "dominant_cause_pct": 31.4,
       "dominant_priority": "Low",
       "dominant_priority_pct": 100.0,
       "associated_police_station": "K.S. Layout",
       "associated_zone": "South Zone 1",
       "associated_corridor": "Non-corridor",
+      "rank": 63
+    },
+    {
+      "cluster_id": 29,
+      "center_latitude": 12.997941,
+      "center_longitude": 77.551445,
+      "event_count": 35,
+      "dominant_event_cause": "vehicle_breakdown",
+      "dominant_cause_pct": 54.3,
+      "dominant_priority": "High",
+      "dominant_priority_pct": 97.1,
+      "associated_police_station": "Rajajinagar",
+      "associated_zone": "West Zone 1",
+      "associated_corridor": "West of Chord Road",
       "rank": 64
     },
     {
@@ -946,20 +946,6 @@
       "rank": 67
     },
     {
-      "cluster_id": 15,
-      "center_latitude": 12.855221,
-      "center_longitude": 77.588863,
-      "event_count": 31,
-      "dominant_event_cause": "pot_holes",
-      "dominant_cause_pct": 58.1,
-      "dominant_priority": "High",
-      "dominant_priority_pct": 80.6,
-      "associated_police_station": "Hulimavu",
-      "associated_zone": "South Zone 1",
-      "associated_corridor": "Bannerghata Road",
-      "rank": 68
-    },
-    {
       "cluster_id": 10,
       "center_latitude": 12.936184,
       "center_longitude": 77.705466,
@@ -971,21 +957,21 @@
       "associated_police_station": "HAL Old Airport",
       "associated_zone": "East Zone 1",
       "associated_corridor": "Non-corridor",
-      "rank": 69
+      "rank": 68
     },
     {
-      "cluster_id": 47,
-      "center_latitude": 13.030216,
-      "center_longitude": 77.631085,
+      "cluster_id": 16,
+      "center_latitude": 12.854967,
+      "center_longitude": 77.588792,
       "event_count": 30,
-      "dominant_event_cause": "vehicle_breakdown",
-      "dominant_cause_pct": 96.7,
+      "dominant_event_cause": "pot_holes",
+      "dominant_cause_pct": 60.0,
       "dominant_priority": "High",
-      "dominant_priority_pct": 100.0,
-      "associated_police_station": "Hennuru",
-      "associated_zone": "North Zone 1",
-      "associated_corridor": "Airport New South Road",
-      "rank": 70
+      "dominant_priority_pct": 80.0,
+      "associated_police_station": "Hulimavu",
+      "associated_zone": "South Zone 1",
+      "associated_corridor": "Bannerghata Road",
+      "rank": 69
     }
   ]
 }

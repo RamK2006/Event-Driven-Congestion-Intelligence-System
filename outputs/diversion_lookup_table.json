@@ -14,15 +14,15 @@
           "total_events": 235,
           "co_occurrence_ratio": 1.8553,
           "shared_zones": [
-            "North Zone 1",
             "North Zone 2",
             "West Zone 1",
+            "North Zone 1",
             "South Zone 1"
           ],
           "shared_stations": [
-            "Kodigehalli",
             "Yeshwanthpura",
-            "Jalahalli"
+            "Jalahalli",
+            "Kodigehalli"
           ]
         },
         {
@@ -31,19 +31,19 @@
           "total_events": 458,
           "co_occurrence_ratio": 1.9454,
           "shared_zones": [
-            "West Zone 2",
+            "North Zone 2",
             "West Zone 1",
-            "North Zone 2"
+            "West Zone 2"
           ],
           "shared_stations": [
-            "R.T. Nagar",
-            "Malleshwaram",
-            "Peenya",
-            "Jnanabharathi",
-            "Sadashivanagar",
-            "Yeshwanthpura",
             "Sheshadripuram",
-            "Chikkabanavara"
+            "R.T. Nagar",
+            "Chikkabanavara",
+            "Malleshwaram",
+            "Jnanabharathi",
+            "Yeshwanthpura",
+            "Sadashivanagar",
+            "Peenya"
           ]
         },
         {
@@ -52,16 +52,16 @@
           "total_events": 263,
           "co_occurrence_ratio": 2.1217,
           "shared_zones": [
-            "Central Zone 2",
-            "Central Zone 1"
+            "Central Zone 1",
+            "Central Zone 2"
           ],
           "shared_stations": [
-            "Jeevanbheemanagar",
-            "Halasur",
-            "Shivajinagar",
-            "Cubbon Park",
             "Banaswadi",
-            "Ashok Nagar"
+            "Jeevanbheemanagar",
+            "Shivajinagar",
+            "Ashok Nagar",
+            "Cubbon Park",
+            "Halasur"
           ]
         }
       ],
@@ -284,8 +284,8 @@
           "total_events": 379,
           "co_occurrence_ratio": 0.0026,
           "shared_zones": [
-            "West Zone 2",
-            "North Zone 2"
+            "North Zone 2",
+            "West Zone 2"
           ],
           "shared_stations": []
         },
@@ -355,9 +355,9 @@
           "total_events": 743,
           "co_occurrence_ratio": 0.4159,
           "shared_zones": [
-            "West Zone 2",
+            "North Zone 2",
             "Central Zone 2",
-            "North Zone 2"
+            "West Zone 2"
           ],
           "shared_stations": [
             "High ground",
@@ -650,12 +650,12 @@
           "total_events": 379,
           "co_occurrence_ratio": 0.1082,
           "shared_zones": [
-            "North Zone 1",
-            "North Zone 2"
+            "North Zone 2",
+            "North Zone 1"
           ],
           "shared_stations": [
-            "Yelahanka",
-            "Chikkajala"
+            "Chikkajala",
+            "Yelahanka"
           ]
         }
       ],
@@ -808,8 +808,8 @@
           "total_events": 168,
           "co_occurrence_ratio": 0.0,
           "shared_zones": [
-            "South Zone 1",
-            "West Zone 1"
+            "West Zone 1",
+            "South Zone 1"
           ],
           "shared_stations": []
         },
@@ -1246,8 +1246,8 @@
             "East Zone 2"
           ],
           "shared_stations": [
-            "Mahadevapura",
-            "Banaswadi"
+            "Banaswadi",
+            "Mahadevapura"
           ]
         }
       ],
