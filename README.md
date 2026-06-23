@@ -31,9 +31,9 @@
 
 | Component | URL |
 |-----------|-----|
-| 🖥️ **Frontend Dashboard** | _Deploy to Vercel → add URL here_ |
-| ⚙️ **Backend API** | _Deploy to Render → add URL here_ |
-| 💚 **Health Check** | _`<backend-url>/api/health`_ |
+| 🖥️ **Frontend Dashboard** | [dashboard-tan-ten-51.vercel.app](https://dashboard-tan-ten-51.vercel.app) |
+| ⚙️ **Backend API** | [event-driven-congestion-intelligence.onrender.com](https://event-driven-congestion-intelligence.onrender.com) |
+| 💚 **Health Check** | [`/api/health`](https://event-driven-congestion-intelligence.onrender.com/api/health) |
 
 ---
 
@@ -291,12 +291,9 @@ python src/server.py
 
 ## Known Limitations
 
-1. **Clearance-time model** trained on ~39% of data (closed/resolved events only). Active events are right-censored.
-2. **Priority labels** reflect operational/subjective police judgment, not independent severity measurement.
-3. **Diversion module** is heuristic/co-occurrence-based, NOT a routing algorithm. No road-network graph data exists.
-4. **Zone/Junction coverage** partial (42%/31%). Used as secondary features with explicit known/unknown flags.
-5. **Planned events** are 5.7% of the dataset — a small but identified sub-population.
-6. **Render free tier** may experience cold starts (first request after inactivity takes ~30s to spin up).
+1. **Diversion suggestions** are heuristic and co-occurrence-based — they surface historically correlated alternative corridors, not shortest-path routing. No road-network graph is used.
+2. **Render free tier** may experience cold starts (~30s spin-up on the first request after a period of inactivity).
+3. **Clearance-time prediction** applies only to events that have a recorded resolution (closed/resolved status). Events still marked as active are excluded from this model's training by design, since they lack a ground-truth clearance duration.
 
 ---
 
